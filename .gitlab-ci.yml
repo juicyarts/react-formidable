@@ -1,0 +1,61 @@
+image: node:12
+
+stages:
+  - validate
+  - test
+  - deploy
+  - build
+
+variables:
+  ESLINT_FORMATTER: gitlab
+  ESLINT_CODE_QUALITY_REPORT: ./reports/lint/gl-codequality.json
+  SAST_EXCLUDED_PATHS: 'node_modules'
+  NPM_CONFIG_CACHE: /cache/.npm
+  YARN_CACHE_FOLDER: /cache/.npm
+
+include:
+  - template: Dependency-Scanning.gitlab-ci.yml
+  - template: Code-Quality.gitlab-ci.yml
+  - template: SAST.gitlab-ci.yml
+  - template: License-Scanning.gitlab-ci.yml
+
+.validate_template: &validate_definition
+  stage: validate
+  tags:
+    - sharedcache
+
+validate:test:
+  <<: *validate_definition
+  before_script:
+    - yarn install --production=false --network-concurrency=1
+  script:
+    - yarn test:ci
+  artifacts:
+    paths:
+      - ./reports
+    reports:
+      junit: ./reports/unit/junit.xml
+      cobertura: ./reports/unit/cobertura-coverage.xml
+
+code_quality:
+  <<: *validate_definition
+  before_script:
+    - yarn install --production=false --network-concurrency=1
+  image: node:12
+  script:
+    - yarn lint:ci
+  artifacts:
+    reports:
+      codequality: ./reports/lint/gl-codequality.json
+
+sast:
+  tags:
+    - sharedcache
+
+dependency_scanning:
+  tags:
+    - sharedcache
+
+license_scanning:
+  tags:
+    - sharedcache

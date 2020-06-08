@@ -1,0 +1,15 @@
+# dependencies
+node_modules
+web_modules
+
+# builds
+dist
+.build
+build
+
+# artifacts
+reports
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

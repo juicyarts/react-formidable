@@ -1,0 +1,8 @@
+{
+  "extends": "@snowpack/app-scripts-react",
+  "devOptions": {},
+  "installOptions": {},
+  "scripts": {
+    "mount:parent": "mount ../src --to /parent"
+  }
+}

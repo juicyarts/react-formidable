@@ -1,0 +1,16 @@
+{
+  "scripts": {
+    "start": "snowpack dev"
+  },
+  "dependencies": {
+    "react": "^16.13.0",
+    "react-dom": "^16.13.1",
+    "@eppendorf/react-forms": "file:../"
+  },
+  "devDependencies": {
+    "@snowpack/app-scripts-react": "^0.7.2",
+    "@types/react-dom": "^16.9.8",
+    "snowpack": "^2.0.0-0",
+    "typescript": "^3.8.0"
+  }
+}
