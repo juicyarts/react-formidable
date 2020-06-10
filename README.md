@@ -1,10 +1,6 @@
-<center>
-  <img width="60%" src="./docs/formidable.svg">
-  <figure class="video_container">
-    <iframe width="100%" height="500px" src="https://www.youtube.com/embed/2dSNdrodqZk" frameborder="0" allowfullscreen="true">
-    </iframe>
-  </figure>
-</center>
+<center><img width="60%" src="./docs/formidable.svg">
+  <br>
+  <img src="https://vignette.wikia.nocookie.net/meme/images/1/15/Wine.gif/revision/latest/scale-to-width-down/340?cb=20171029023215"></center>
 
 <br>
 
