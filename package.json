@@ -94,5 +94,8 @@
       "tests/**/*.{js,ts,tsx}"
     ],
     "collectCoverage": true
+  },
+  "publishConfig": {
+    "@eppendorf:registry": "https://gitlab.dasgip.de/api/v4/projects/257/packages/npm/"
   }
 }
