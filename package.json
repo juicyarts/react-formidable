@@ -51,7 +51,6 @@
     "jest": "^26.0.1",
     "jest-environment-jsdom-fourteen": "^1.0.1",
     "jest-junit": "^10.0.0",
-    "lint-staged": "^10.2.9",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "rimraf": "^3.0.2",
@@ -95,11 +94,5 @@
       "tests/**/*.{js,ts,tsx}"
     ],
     "collectCoverage": true
-  },
-  "lint-staged": {
-    "{src,tests}/**/*.{ts,tsx}": [
-      "tsc && eslint . -f stylish",
-      "git add"
-    ]
   }
 }

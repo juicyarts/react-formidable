@@ -1,12 +1,8 @@
-import React, {
-  createContext,
-  ReactElement,
-  ComponentType,
-} from 'react';
+import React, { createContext, ReactElement, ComponentType } from 'react';
 
-import { FormidableValues } from './types';
+import { FormidableValues, FormidableContextProps } from './types';
 
-export const FormidableContext = createContext({ formState: {} });
+export const FormidableContext = createContext({ formState: {} } as FormidableContextProps<any>);
 
 export const FormidableProvider = FormidableContext.Provider;
 export const FormidableConsumer = FormidableContext.Consumer;

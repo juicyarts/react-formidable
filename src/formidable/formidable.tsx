@@ -10,8 +10,7 @@ function Formidable<Values extends FormidableValues>({
   className,
   ...props
 }: FormidableComponentProps<Values>): FunctionComponentElement<FormidableComponentProps<Values>> {
-  // FIXME: fix any :/
-  const formidable: any = useFormidable<Values>(props);
+  const formidable: FormidableContextProps<Values> = useFormidable<Values>(props);
   const foo = isFunction(children)
     ? (children as (formidableProps: FormidableContextProps<Values>) => ReactNode)(formidable)
     : children;
