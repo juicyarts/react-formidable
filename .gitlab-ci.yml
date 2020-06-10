@@ -22,7 +22,7 @@ include:
 .validate_template: &validate_definition
   stage: validate
   tags:
-    - ludmilla
+    - sharedcache
 
 validate:test:
   <<: *validate_definition
@@ -50,12 +50,12 @@ code_quality:
 
 sast:
   tags:
-    - ludmilla
+    - sharedcache
 
 dependency_scanning:
   tags:
-    - ludmilla
+    - sharedcache
 
 license_scanning:
   tags:
-    - ludmilla
+    - sharedcache
