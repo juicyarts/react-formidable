@@ -8,13 +8,24 @@ import { object as yupObject, number as yupNumber, string as yupString, ObjectSc
 // support. I guess there's a better approach to do this.
 /* eslint-disable import/no-absolute-path */
 /* eslint-disable import/no-unresolved */
-import Formidable, { Form, FormidableEvent, FormidableState, Field } from '/parent/index';
-import FieldError from '/parent/formidable/filed-error';
+import Formidable, {
+  Form,
+  FormidableEvent,
+  FormidableState,
+  Field,
+  FieldError,
+} from '/parent/index';
 /* eslint-enable import/no-absolute-path */
 /* eslint-enable import/no-unresolved */
 
 // import build variant after running yarn install instead if you want
-// import HelloWorld from '@eppendorf/react-Formidables';
+// import Formidable, {
+//   Form,
+//   FormidableEvent,
+//   FormidableState,
+//   Field,
+//   FieldError,
+// } from '@eppendorf/react-formidable';
 
 export type ExtendedSchema<T extends Record<string, unknown>> = ObjectSchema<T>;
 
@@ -36,7 +47,7 @@ const barSchema = yupObject().shape({
 });
 
 function App(): FunctionComponentElement<unknown> {
-  function onEvent(event: FormidableEvent, formState?: FormidableState<Bar>, values?: Bar): void {
+  function onEvent(values?: Bar, formState?: FormidableState<Bar>, event?: FormidableEvent): void {
     console.debug('TEST:', event, formState, values);
   }
 
@@ -45,7 +56,6 @@ function App(): FunctionComponentElement<unknown> {
       <h2>using onboard components</h2>
       <Formidable<Bar>
         initialValues={bar}
-        events={[FormidableEvent.All]}
         validationSchema={barSchema}
         handleEvent={onEvent}
         validateOn={[FormidableEvent.Change]}

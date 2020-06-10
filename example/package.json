@@ -3,9 +3,11 @@
     "start": "snowpack dev"
   },
   "dependencies": {
-    "react": "^16.13.0",
+    "@eppendorf/css": "^0.1.2",
+    "@eppendorf/react-formidable": "file:../",
+    "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "@eppendorf/react-forms": "file:../"
+    "yup": "^0.29.1"
   },
   "devDependencies": {
     "@snowpack/app-scripts-react": "^0.7.2",

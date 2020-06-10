@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { FunctionComponentElement, InputHTMLAttributes } from 'react';
 
-import { useField } from './formidable-hooks';
+import { useFormidableContext, useField } from './formidable-hooks';
 import { FormidableValues } from './types';
 
 export interface FieldProps<T extends FormidableValues>
@@ -13,14 +13,17 @@ function Field<T extends FormidableValues>({
   name: key,
   ...props
 }: FieldProps<T>): FunctionComponentElement<FieldProps<T>> {
-  const [fieldValue, handleChange, handleBlur] = useField<T>(key);
+  const { handleChange, handleBlur, handleFocus } = useFormidableContext<T>();
+  const { value } = useField<T>(key);
+
   return (
     <input
       {...props}
       name={String(key)}
-      value={String(fieldValue)}
+      value={String(value)}
       onChange={handleChange}
       onBlur={handleBlur}
+      onFocus={handleFocus}
     />
   );
 }

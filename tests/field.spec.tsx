@@ -54,9 +54,9 @@ describe('Field', () => {
     expect(value).toBe('baz');
 
     expect(handleEventSpy).toHaveBeenCalledWith(
-      FormidableEvent.Change,
-      { errors: {} },
       { foo: 'baz' },
+      { errors: {} },
+      FormidableEvent.Change,
     );
   });
 
@@ -72,11 +72,11 @@ describe('Field', () => {
     wrapper.update();
 
     expect(handleEventSpy).toHaveBeenCalledWith(
-      FormidableEvent.Blur,
-      { errors: {} },
       {
         foo: 'initial',
       },
+      { errors: {} },
+      FormidableEvent.Blur,
     );
   });
 });

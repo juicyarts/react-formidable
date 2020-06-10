@@ -18,26 +18,31 @@ const getBabelOptions = (targets) => ({
 function createESMConfig(input, output) {
   return {
     input,
-    output: { file: output, format: 'esm' },
+    output: {
+      file: output,
+      format: 'esm',
+      globals: {
+        react: 'React',
+      },
+    },
     external,
-    plugins: [
-      typescript(),
-      babel(getBabelOptions({ node: 8 })),
-      resolve({ extensions }),
-    ],
+    plugins: [typescript(), babel(getBabelOptions({ node: 8 })), resolve({ extensions })],
   };
 }
 
 function createCommonJSConfig(input, output) {
   return {
     input,
-    output: { file: output, format: 'cjs', exports: 'named' },
+    output: {
+      file: output,
+      format: 'cjs',
+      exports: 'named',
+      globals: {
+        react: 'React',
+      },
+    },
     external,
-    plugins: [
-      typescript(),
-      babel(getBabelOptions({ ie: 11 })),
-      resolve({ extensions }),
-    ],
+    plugins: [typescript(), babel(getBabelOptions({ ie: 11 })), resolve({ extensions })],
   };
 }
 
@@ -54,11 +59,7 @@ function createIIFEConfig(input, output, globalName) {
       },
     },
     external,
-    plugins: [
-      typescript(),
-      babel(getBabelOptions({ ie: 11 })),
-      resolve({ extensions }),
-    ],
+    plugins: [typescript(), babel(getBabelOptions({ ie: 11 })), resolve({ extensions })],
   };
 }
 
