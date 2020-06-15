@@ -55,7 +55,16 @@ describe('Field', () => {
 
     expect(handleEventSpy).toHaveBeenCalledWith(
       { foo: 'baz' },
-      { errors: {} },
+      {
+        errors: {},
+        touched: {
+          foo: true,
+        },
+        dirty: {
+          foo: true,
+        },
+        submitted: false,
+      },
       FormidableEvent.Change,
     );
   });
@@ -75,7 +84,12 @@ describe('Field', () => {
       {
         foo: 'initial',
       },
-      { errors: {} },
+      {
+        errors: {},
+        touched: {},
+        dirty: {},
+        submitted: false,
+      },
       FormidableEvent.Blur,
     );
   });
