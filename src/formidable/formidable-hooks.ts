@@ -60,7 +60,7 @@ function useValidationMap<Values extends FormidableValues>(
   };
 }
 
-export function useFormidable<Values extends FormidableValues>({
+function useFormidable<Values extends FormidableValues>({
   events = [FormidableEvent.All],
   handleEvent,
   initialValues,
@@ -193,6 +193,7 @@ export function useFormidable<Values extends FormidableValues>({
 
   function handleSubmit(e: FormEvent<HTMLFormElement>): void {
     e.preventDefault();
+    setFormDirtyState({});
     dispatchValidator(FormidableEvent.Submit);
     dispatchEvent(FormidableEvent.Submit);
   }
@@ -283,4 +284,4 @@ export function useFieldError<T extends FormidableValues>(
   return getFieldError(name);
 }
 
-export default useFormidableContext;
+export default useFormidable;
