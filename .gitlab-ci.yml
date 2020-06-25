@@ -54,6 +54,8 @@ build:
     NODE_ENV: 'production'
   tags:
     - sharedcache
+  before_script:
+    - yarn install --production=false --network-concurrency=1
   script:
     - yarn build
   artifacts:
