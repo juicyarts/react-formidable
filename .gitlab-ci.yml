@@ -60,7 +60,7 @@ build:
     - yarn build
   artifacts:
     paths:
-      - ./build
+      - ./dist
     expire_in: 6 hours
 
 sast:
