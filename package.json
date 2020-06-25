@@ -1,6 +1,6 @@
 {
   "name": "@eppendorf/react-formidable",
-  "version": "0.1.1",
+  "version": "0.0.0",
   "description": "react form library",
   "main": "dist/index.cjs.js",
   "module": "dist/index.js",
@@ -96,6 +96,6 @@
     "collectCoverage": true
   },
   "publishConfig": {
-    "@eppendorf:registry": "https://gitlab.dasgip.de/api/v4/projects/257/packages/npm/"
+    "@eppendorf:registry": "https://git.dasgip.de/api/v4/projects/3/packages/npm/"
   }
 }

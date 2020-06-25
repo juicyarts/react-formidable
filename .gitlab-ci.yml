@@ -3,8 +3,8 @@ image: node:12
 stages:
   - validate
   - test
-  - deploy
   - build
+  - deploy
 
 variables:
   ESLINT_FORMATTER: gitlab
@@ -48,6 +48,19 @@ code_quality:
     reports:
       codequality: ./reports/lint/gl-codequality.json
 
+build:
+  stage: build
+  variables:
+    NODE_ENV: 'production'
+  tags:
+    - sharedcache
+  script:
+    - yarn build
+  artifacts:
+    paths:
+      - ./build
+    expire_in: 6 hours
+
 sast:
   tags:
     - sharedcache
@@ -59,3 +72,17 @@ dependency_scanning:
 license_scanning:
   tags:
     - sharedcache
+
+deploy:
+  tags:
+    - sharedcache
+  stage: deploy
+  only:
+    - /^v(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?$/
+  variables:
+    GIT_STRATEGY: none
+  script:
+    - echo '//git.dasgip.de/api/v4/projects/${CI_PROJECT_ID}/packages/npm/:_authToken=${CI_JOB_TOKEN}' >> ~/.npmrc
+    - npm publish
+  dependencies:
+    - build
