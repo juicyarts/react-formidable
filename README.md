@@ -108,3 +108,9 @@ $ yarn test
 # run yarn in ci mode
 $ yarn test:ci
 ```
+
+## Package publishing
+
+- use `yarn version` to bump the version
+- use `git push --tags` to push the tag
+- when tags are pushed a npm package is deployed
