@@ -1004,10 +1004,10 @@
   dependencies:
     find-up "^4.0.0"
 
-"@eppendorf/eslint-config@0.1.2":
-  version "0.1.2"
-  resolved "https://gitlab.dasgip.de/api/v4/projects/207/packages/npm/@eppendorf/eslint-config/-/@eppendorf/eslint-config-0.1.2.tgz#fc490b967aaf05734bfec8bd1b7b81426bf54ee8"
-  integrity sha1-/EkLlnqvBXNL/si9G3uBQmv1Tug=
+"@eppendorf/eslint-config@0.1.1":
+  version "0.1.1"
+  resolved "https://artifactory.cluster:443/artifactory/api/npm/npm_registry/@eppendorf/eslint-config/-/@eppendorf/eslint-config-0.1.1.tgz#67d41d180b55457ead7e83585d762ae4f390c627"
+  integrity sha1-Z9QdGAtVRX6tfoNYXXYq5POQxic=
   optionalDependencies:
     "@typescript-eslint/eslint-plugin" "^3.0.0"
     "@typescript-eslint/parser" "^3.0.0"
