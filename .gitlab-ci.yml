@@ -21,14 +21,22 @@ include:
 
 .validate_template: &validate_definition
   stage: validate
-  tags:
-    - sharedcache
+
+.npm_registry_template: &npm_registry_definition
+  before_script:
+    - echo "//artifactory.cluster/artifactory/api/npm/npm_registry/:_password=${ARTIFACTORY_NPM_PASS}" >> ~/.npmrc
+    - echo "//artifactory.cluster/artifactory/api/npm/npm_registry/:username=${ARTIFACTORY_NPM_USER}" >> ~/.npmrc
+    - echo "strict-ssl=false" >> ~/.npmrc
+    - echo "\"//artifactory.cluster/artifactory/api/npm/npm_registry/:_password=\" ${ARTIFACTORY_NPM_PASS}" >> ~/.yarnrc
+    - echo "\"//artifactory.cluster/artifactory/api/npm/npm_registry/:username=\" ${ARTIFACTORY_NPM_USER}" >> ~/.yarnrc
+    - echo "strict-ssl \"\"" >> ~/.yarnrc
 
 validate:test:
-  <<: *validate_definition
-  before_script:
-    - yarn install --production=false --network-concurrency=1
+  extends:
+    - .validate_template
+    - .npm_registry_template
   script:
+    - yarn install --production=false --network-concurrency=1
     - yarn test:ci
   artifacts:
     paths:
@@ -38,11 +46,12 @@ validate:test:
       cobertura: ./reports/unit/cobertura-coverage.xml
 
 code_quality:
-  <<: *validate_definition
-  before_script:
-    - yarn install --production=false --network-concurrency=1
+  extends:
+    - .validate_template
+    - .npm_registry_template
   image: node:12
   script:
+    - yarn install --production=false --network-concurrency=1
     - yarn lint:ci
   artifacts:
     reports:
@@ -50,41 +59,27 @@ code_quality:
 
 build:
   stage: build
+  extends:
+    - .validate_template
+    - .npm_registry_template
   variables:
     NODE_ENV: 'production'
-  tags:
-    - sharedcache
-  before_script:
-    - yarn install --production=false --network-concurrency=1
   script:
+    - yarn install --production=false --network-concurrency=1
     - yarn build
   artifacts:
     paths:
       - ./dist
     expire_in: 6 hours
 
-sast:
-  tags:
-    - sharedcache
-
-dependency_scanning:
-  tags:
-    - sharedcache
-
-license_scanning:
-  tags:
-    - sharedcache
-
 deploy:
-  tags:
-    - sharedcache
   stage: deploy
+  extends:
+    - .validate_template
+    - .npm_registry_template
   only:
     - /^v(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?$/
-  variables:
-    GIT_STRATEGY: none
   script:
-    - echo '//git.dasgip.de/api/v4/projects/${CI_PROJECT_ID}/packages/npm/:_authToken=${CI_JOB_TOKEN}' >> ~/.npmrc
     - npm publish
   dependencies:
-    - build
+    - validate:candeploy

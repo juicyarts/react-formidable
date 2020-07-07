@@ -96,6 +96,6 @@
     "collectCoverage": true
   },
   "publishConfig": {
-    "@eppendorf:registry": "https://git.dasgip.de/api/v4/projects/3/packages/npm/"
+    "@eppendorf:registry": "https://artifactory.cluster/artifactory/api/npm/npm_registry/"
   }
 }
