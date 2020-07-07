@@ -82,4 +82,4 @@ deploy:
   script:
     - npm publish
   dependencies:
-    - validate:candeploy
+    - build
