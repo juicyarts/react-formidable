@@ -6,32 +6,10 @@ stages:
   - build
   - deploy
 
-variables:
-  ESLINT_FORMATTER: gitlab
-  ESLINT_CODE_QUALITY_REPORT: ./reports/lint/gl-codequality.json
-  SAST_EXCLUDED_PATHS: 'node_modules'
-  NPM_CONFIG_CACHE: /cache/.npm
-  YARN_CACHE_FOLDER: /cache/.npm
-
 include:
-  - template: Dependency-Scanning.gitlab-ci.yml
-  - template: Code-Quality.gitlab-ci.yml
-  - template: SAST.gitlab-ci.yml
-  - template: License-Scanning.gitlab-ci.yml
-
-.validate_template: &validate_definition
-  stage: validate
-
-.tags_template: &tags_definition
-  tags:
-    - sharedcache
-
-.npm_registry_template: &npm_registry_definition
-  before_script:
-    - echo '//git.dasgip.de/api/v4/projects/${CI_PROJECT_ID}/packages/npm/:_authToken=${NPM_REGISTRY_TOKEN}' >> ~/.npmrc
-    - echo "//git.dasgip.de/api/v4/:_authToken=${NPM_REGISTRY_TOKEN}" >> ~/.npmrc
-    - echo "//git.dasgip.de/api/v4/packages/npm/:_authToken=${NPM_REGISTRY_TOKEN}" >> ~/.npmrc
-    - yarn install --production=false --network-concurrency=1
+  - project: 'eppendorf/infrastructure-tooling/ci-templates'
+    ref: v0.1.0
+    file: '/job-templates.yml'
 
 validate:test:
   extends:
