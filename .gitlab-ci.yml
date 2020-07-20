@@ -59,4 +59,5 @@ deploy:
   only:
     - /^v(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?$/
   script:
+    - echo '//git.dasgip.de/api/v4/projects/3/packages/npm/:_authToken=${NPM_REGISTRY_TOKEN}' >> ~/.npmrc
     - npm publish
