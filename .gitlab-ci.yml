@@ -22,21 +22,23 @@ include:
 .validate_template: &validate_definition
   stage: validate
 
+.tags_template: &tags_definition
+  tags:
+    - sharedcache
+
 .npm_registry_template: &npm_registry_definition
   before_script:
-    - echo "//artifactory.cluster/artifactory/api/npm/npm_registry/:_password=${ARTIFACTORY_NPM_PASS}" >> ~/.npmrc
-    - echo "//artifactory.cluster/artifactory/api/npm/npm_registry/:username=${ARTIFACTORY_NPM_USER}" >> ~/.npmrc
-    - echo "strict-ssl=false" >> ~/.npmrc
-    - echo "\"//artifactory.cluster/artifactory/api/npm/npm_registry/:_password=\" ${ARTIFACTORY_NPM_PASS}" >> ~/.yarnrc
-    - echo "\"//artifactory.cluster/artifactory/api/npm/npm_registry/:username=\" ${ARTIFACTORY_NPM_USER}" >> ~/.yarnrc
-    - echo "strict-ssl \"\"" >> ~/.yarnrc
+    - echo '//git.dasgip.de/api/v4/projects/${CI_PROJECT_ID}/packages/npm/:_authToken=${NPM_REGISTRY_TOKEN}' >> ~/.npmrc
+    - echo "//git.dasgip.de/api/v4/:_authToken=${NPM_REGISTRY_TOKEN}" >> ~/.npmrc
+    - echo "//git.dasgip.de/api/v4/packages/npm/:_authToken=${NPM_REGISTRY_TOKEN}" >> ~/.npmrc
+    - yarn install --production=false --network-concurrency=1
 
 validate:test:
   extends:
     - .validate_template
+    - .tags_template
     - .npm_registry_template
   script:
-    - yarn install --production=false --network-concurrency=1
     - yarn test:ci
   artifacts:
     paths:
@@ -48,10 +50,10 @@ validate:test:
 code_quality:
   extends:
     - .validate_template
+    - .tags_template
     - .npm_registry_template
   image: node:12
   script:
-    - yarn install --production=false --network-concurrency=1
     - yarn lint:ci
   artifacts:
     reports:
@@ -60,12 +62,11 @@ code_quality:
 build:
   stage: build
   extends:
-    - .validate_template
+    - .tags_template
     - .npm_registry_template
   variables:
     NODE_ENV: 'production'
   script:
-    - yarn install --production=false --network-concurrency=1
     - yarn build
   artifacts:
     paths:
@@ -75,11 +76,9 @@ build:
 deploy:
   stage: deploy
   extends:
-    - .validate_template
+    - .tags_template
     - .npm_registry_template
   only:
     - /^v(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?$/
   script:
     - npm publish
-  dependencies:
-    - build
