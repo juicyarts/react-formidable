@@ -17,4 +17,9 @@ _~~strikethrough~~ not part of this MR_
 
 - _Write your changes here_
 
-/label ~new ~merge-request ~bugfix /cc @aeib /cc @jschmidle /cc @hyildiz
+/label ~new ~bug ~fix
+/cc @hyildiz
+/cc @aeib
+/cc @jschmidle
+/cc @mlackus
+/cc @jmschlieper

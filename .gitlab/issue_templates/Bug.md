@@ -26,4 +26,9 @@
 
 (If you can, link to the line of code that might be responsible for the problem)
 
-/label ~new ~bug /cc @aeib /cc @@jschmidle  /assign @hyildiz
+/label ~new ~bug
+/cc @hyildiz
+/cc @aeib
+/cc @jschmidle
+/cc @mlackus
+/cc @jmschlieper

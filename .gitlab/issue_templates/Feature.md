@@ -18,4 +18,9 @@ _(If possible, add already identified subtasks to the feature)_
 
 _(Add a list of acceptance criteria for the reviewer)_
 
-/label ~new ~feature-request /cc @aeib /cc @jschmidle /assign @hyildiz
+/label ~new ~feature
+/cc @hyildiz
+/cc @aeib
+/cc @jschmidle
+/cc @mlackus
+/cc @jmschlieper

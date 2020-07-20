@@ -26,4 +26,9 @@ tbd
 
 ## Open Questions/Todo's
 
-/label ~new ~rfc /cc @aeib /cc @jschmidle /assign @hyildiz
+/label ~new ~rfc
+/cc @hyildiz
+/cc @aeib
+/cc @jschmidle
+/cc @mlackus
+/cc @jmschlieper
