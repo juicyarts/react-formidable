@@ -10,6 +10,7 @@
   ],
   "scripts": {
     "prebuild": "rimraf dist",
+    "postinstall": "rollup -c",
     "build": "rollup -c",
     "lint": "tsc && eslint \"./{src,tests}/**/*.{ts,tsx}\" -f stylish",
     "lint:ci": "tsc && eslint \"./{src,tests}/**/*.{ts,tsx}\" -f eslint-formatter-gitlab",
