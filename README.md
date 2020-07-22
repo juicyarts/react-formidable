@@ -111,4 +111,4 @@ $ yarn test:ci
 
 ## Package publishing
 
-See [package publishing](https://confluence.dasgip.de/x/H6dQCw) on confluence.
+See [documentation](https://confluence.dasgip.de/x/H6dQCw) on confluence.
