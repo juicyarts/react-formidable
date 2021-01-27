@@ -1,6 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+
 import App from './app';
+import '@eppendorf/css/dist/visionize/visionize.min.css';
+import './app.scss';
 
 ReactDOM.render(
   <React.StrictMode>
