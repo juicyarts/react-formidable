@@ -24,7 +24,7 @@
     "@babel/plugin-transform-typescript": "^7.6.3",
     "@babel/preset-env": "^7.6.3",
     "@commitlint/config-conventional": "^8.3.4",
-    "@eppendorf/eslint-config": "git+https://gitlab.dasgip.de/eppendorf/lib/eslint-config.git#semver:^0.1.1",
+    "@eppendorf/eslint-config": "git+https://oauth2:NsWwBFY9M9ruwsBHcn7E@gitlab.dasgip.de/eppendorf/lib/eslint-config.git#semver:^0.1.1",
     "@rollup/plugin-babel": "^5.0.2",
     "@rollup/plugin-commonjs": "^13.0.0",
     "@rollup/plugin-node-resolve": "^8.0.0",
