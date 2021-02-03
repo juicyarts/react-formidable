@@ -2,8 +2,7 @@ import React from 'react';
 import { ReactWrapper, mount } from 'enzyme';
 import { act } from 'react-dom/test-utils';
 
-import Formidable, { Field } from '../src';
-import { FormidableEvent } from '../src/formidable/types';
+import Formidable, { Field, FormidableEvent } from '../../src';
 
 type InitialFormValues = {
   foo: string;

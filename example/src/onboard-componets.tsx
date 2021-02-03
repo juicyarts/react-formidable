@@ -1,10 +1,5 @@
+/* eslint-disable jsx-a11y/label-has-associated-control */
 import React, { FunctionComponentElement } from 'react';
-import {
-  object as yupObject,
-  number as yupNumber,
-  string as yupString,
-} from 'yup';
-
 import Formidable, {
   Form,
   FormidableEvent,
@@ -16,19 +11,20 @@ import Formidable, {
 type Bar = {
   firstname: string;
   age: number;
+  range: {
+    min: number;
+    max: number;
+  };
 };
 
 const bar: Bar = {
   firstname: 'max',
   age: 1,
+  range: {
+    min: 1,
+    max: 2,
+  },
 };
-
-export const NameRegex = /^[a-zA-Z0-9 :./_/-]*$/;
-
-const barSchema = yupObject().shape({
-  firstname: yupString().required().max(10).matches(NameRegex),
-  age: yupNumber().required().positive().min(12).max(22),
-});
 
 function OnBoardForm(): FunctionComponentElement<unknown> {
   function onEvent(
@@ -41,10 +37,13 @@ function OnBoardForm(): FunctionComponentElement<unknown> {
 
   return (
     <div className="p-s">
-      <h2>using onboard components</h2>
+      <h3 className="text--title">Onboard components</h3>
+      <p className="p-bottom-s text--regular">
+        This scenario uses the Field and FieldError components exposed by the
+        library
+      </p>
       <Formidable<Bar>
         initialValues={bar}
-        validationSchema={barSchema}
         handleEvent={onEvent}
         validateOn={[FormidableEvent.Change]}
       >
@@ -53,7 +52,11 @@ function OnBoardForm(): FunctionComponentElement<unknown> {
             <label className="input__label" htmlFor="firstname">
               Firstname
             </label>
-            <Field<Bar> type="text" name="firstname" className="input" />
+            <Field<Bar>
+              type="text"
+              name="firstname"
+              className="input"
+            />
             <FieldError<Bar> name="firstname" />
           </div>
           <div className="input__group">
@@ -63,6 +66,24 @@ function OnBoardForm(): FunctionComponentElement<unknown> {
             <Field<Bar> type="number" name="age" className="input" />
             <FieldError<Bar> name="age" />
           </div>
+          <div className="input__group">
+            <label className="input__label" htmlFor="age">
+              Range
+            </label>
+            <Field<Bar, 'range'>
+              type="number"
+              name="range"
+              subName="min"
+              className="input"
+            />
+            <Field<Bar, 'range'>
+              type="number"
+              name="range"
+              subName="max"
+              className="input"
+            />
+            <FieldError<Bar> name="range" />
+          </div>
         </Form>
       </Formidable>
     </div>
@@ -70,3 +91,4 @@ function OnBoardForm(): FunctionComponentElement<unknown> {
 }
 
 export default OnBoardForm;
+/* eslint-enable jsx-a11y/label-has-associated-control */

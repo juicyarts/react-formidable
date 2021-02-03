@@ -26,20 +26,23 @@ function AsyncForm(): FunctionComponentElement<unknown> {
     formState?: Partial<FormidableState<Bar>>,
     event?: FormidableEvent,
   ): void {
-    console.debug('Async Form Change:', event, formState, values);
+    console.debug('Async Form | Form changed:', event, formState, values);
     if (values) setBar(values);
   }
 
   useEffect(() => {
     setTimeout(() => {
       setBar(initialBar);
-      console.debug('DATA UPDATED', initialBar);
+      console.debug('Async Form | Initial data updated:', initialBar);
     }, 5000);
   }, []);
 
   return (
     <div className="p-s">
-      <h2>Async/updating initial</h2>
+      <h3 className="text--title">Async/updating initial</h3>
+      <p className="p-bottom-s text--regular">
+        In this scenario the initial data changes after a given timeout
+      </p>
       <Formidable<Partial<Bar>>
         initialValues={bar}
         handleEvent={onEvent}
@@ -51,14 +54,12 @@ function AsyncForm(): FunctionComponentElement<unknown> {
               Firstname
             </label>
             <Field<Bar> type="text" name="firstname" className="input" />
-            <FieldError<Bar> name="firstname" />
           </div>
           <div className="input__group">
             <label className="input__label" htmlFor="age">
               Age
             </label>
             <Field<Bar> type="number" name="age" className="input" />
-            <FieldError<Bar> name="age" />
           </div>
         </Form>
       </Formidable>

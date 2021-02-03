@@ -3,10 +3,9 @@ import React, {
   ChangeEvent,
   FormEvent,
   useContext,
+  useEffect,
 } from 'react';
-
 import { ValidationError } from 'yup';
-
 import { FormidableContext } from './formidable-context';
 
 import {
@@ -64,7 +63,7 @@ function useFormidable<Values extends FormidableValues>({
   validateOn,
 }: FormidableProps<Values>): FormidableContextProps<Values> {
   const [formState, setFormState] = useState<FormidableState<Values>>({
-    values: initialValues,
+    values: initialValues || ({} as Values),
     errors: {} as ValidationMap<Values>,
     dirty: {} as InteractionStateMap<Values>,
     touched: {} as InteractionStateMap<Values>,
@@ -180,17 +179,17 @@ function useFormidable<Values extends FormidableValues>({
     dispatchEvent(eventType, dispatchValidator(key, eventType, newFormState));
   }
 
-  function handleChange(e: ChangeEvent<HTMLInputElement>): void {
+  function handleChange(e: ChangeEvent<HTMLInputElement | HTMLSelectElement>): void {
     e.preventDefault();
     setField(e.target.name, e.target.value, FormidableEvent.Change);
   }
 
-  function handleBlur(e: React.FocusEvent<HTMLInputElement>): void {
+  function handleBlur(e: React.FocusEvent<HTMLInputElement | HTMLSelectElement>): void {
     e.preventDefault();
     dispatchEvent(FormidableEvent.Blur, dispatchValidator(e.target.name, FormidableEvent.Blur));
   }
 
-  function handleFocus(e: React.FocusEvent<HTMLInputElement>): void {
+  function handleFocus(e: React.FocusEvent<HTMLInputElement | HTMLSelectElement>): void {
     e.preventDefault();
     const newFormState = {
       ...formState,
@@ -218,7 +217,7 @@ function useFormidable<Values extends FormidableValues>({
   function handleReset(e: FormEvent<HTMLFormElement>): void {
     e.preventDefault();
     const newFormState: FormidableState<Values> = {
-      values: initialValues,
+      values: initialValues || ({} as Values),
       errors: {} as ValidationMap<Values>,
       dirty: {} as InteractionStateMap<Values>,
       touched: {} as InteractionStateMap<Values>,
@@ -229,6 +228,10 @@ function useFormidable<Values extends FormidableValues>({
       dispatchValidator(undefined, FormidableEvent.Reset, newFormState),
     );
   }
+
+  useEffect(() => {
+    setFormState({ ...formState, values: initialValues || ({} as Values) });
+  }, [initialValues]);
 
   return {
     getField,

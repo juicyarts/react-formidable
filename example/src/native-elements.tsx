@@ -35,7 +35,10 @@ function NativeForm(): FunctionComponentElement<unknown> {
 
   return (
     <div className="p-s">
-      <h2>Using Plain form elements</h2>
+      <h3 className="text--title">Using Plain form elements</h3>
+      <p className="p-bottom-s text--regular">
+        In this scenario we use plain html inputs
+      </p>
       <Formidable<Bar>
         initialValues={bar}
         events={[FormidableEvent.Change]}

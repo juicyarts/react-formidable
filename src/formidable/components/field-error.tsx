@@ -1,20 +1,14 @@
 import React, { FunctionComponentElement } from 'react';
 
-import { useFieldError } from './formidable-hooks';
-import { FormidableValues } from './types';
-
-export interface FeldErrorProps<T> {
-  name: keyof T;
-}
+import { useFieldError } from '../formidable-hooks';
+import { FeldErrorProps, FormidableValues } from '../types';
 
 function FieldError<T extends FormidableValues>({
   name,
 }: FeldErrorProps<T>): FunctionComponentElement<FeldErrorProps<T>> {
   const fieldError = useFieldError<T>(name);
 
-  return (
-    <span>{fieldError?.message}</span>
-  );
+  return <span>{fieldError?.message}</span>;
 }
 
 export default FieldError;

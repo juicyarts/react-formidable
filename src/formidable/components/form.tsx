@@ -1,11 +1,8 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { FunctionComponentElement, ReactNode, FormHTMLAttributes } from 'react';
+import React, { FunctionComponentElement } from 'react';
 
-import { useFormidableContext } from './formidable-hooks';
-
-export interface FormProps extends FormHTMLAttributes<HTMLFormElement> {
-  children: ReactNode;
-}
+import { FormProps } from '../types';
+import { useFormidableContext } from '../formidable-hooks';
 
 function Form({ children, ...rest }: FormProps): FunctionComponentElement<FormProps> {
   const { handleSubmit, handleReset } = useFormidableContext();
