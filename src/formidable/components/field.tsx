@@ -15,7 +15,8 @@ function Field<T extends FormidableValues, K extends keyof T & string = keyof T 
   return (
     <input
       {...props}
-      name={(subName as string) || (key as string)}
+      id={key}
+      name={key}
       value={value as string}
       onChange={handleChange}
       onBlur={handleBlur}
