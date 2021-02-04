@@ -10,7 +10,14 @@ function AdvancedSelect<T extends FormidableValues>({
 }: AdvancedSelectProps<T>): FunctionComponentElement<AdvancedSelectProps<T>> {
   const { setField } = useFormidableContext<T>();
   const { value } = useField<T>(key);
-  const selectedOption = options.find((option) => option.value === value);
+  const selectedOption = options.find((option) => {
+    // This is a rather simple check that might break when keys in objects are sorted differently;
+    // That use case is quite uncommon but might occur.
+    if (typeof value === 'object') {
+      return JSON.stringify(option.value) === JSON.stringify(value);
+    }
+    return option.value === value;
+  });
 
   function handleChange(ev: ChangeEvent<HTMLSelectElement>): void {
     const selection = options.find((option) => option.displayValue === ev.target.value);
