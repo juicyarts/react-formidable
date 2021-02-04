@@ -1,4 +1,9 @@
-import React, { FunctionComponentElement, ChangeEvent, useState } from 'react';
+import React, {
+  FunctionComponentElement,
+  ChangeEvent,
+  useEffect,
+  useState,
+} from 'react';
 
 import { useField, useFormidableContext } from '../formidable-hooks';
 import {
@@ -33,9 +38,14 @@ function AdvancedSelect<T extends FormidableValues>({
     const selection = options.find((option) => option.displayValue === ev.target.value);
     if (selection) {
       setField(key, selection.value, FormidableEvent.Change);
-      setSelectedOption(mapSelectedValueToOption(selection.value));
     }
   }
+
+  useEffect(() => {
+    if (selectedOption?.value !== value) {
+      setSelectedOption(mapSelectedValueToOption(value));
+    }
+  }, [value]);
 
   return (
     <select

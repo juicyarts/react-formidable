@@ -165,4 +165,64 @@ describe('AdvancedSelect', () => {
       );
     });
   });
+
+  describe('it should apply changes when initial value changes', () => {
+    const fixtureData: AdvancedSelectProps<AdvancedSelectMock> = {
+      name: 'foo',
+      options: [
+        {
+          displayValue: 'Baz',
+          value: 'baz',
+        },
+        {
+          displayValue: 'Bar',
+          value: 'bar',
+        },
+      ],
+    };
+
+    afterAll(() => {
+      handleEventSpy.mockReset();
+    });
+
+    beforeAll(() => {
+      handleEventSpy = jest.fn();
+
+      const initialValues = {
+        foo: 'baz',
+      };
+
+      wrapper = mount(
+        <Formidable<AdvancedSelectMock>
+          initialValues={initialValues}
+          handleEvent={handleEventSpy as any}
+        >
+          <AdvancedSelect<AdvancedSelectMock> {...fixtureData} />
+        </Formidable>,
+      );
+    });
+
+    it('should map value to option and show proper displayValue', () => {
+      expect(wrapper).toBeTruthy();
+      expect(wrapper.find('AdvancedSelect select')).toBeTruthy();
+
+      const { value } = wrapper.find('AdvancedSelect select').props();
+      expect(value).toBe(fixtureData.options[0].displayValue);
+    });
+
+    it('should handle initialValues update', async () => {
+      await act(async () => {
+        wrapper.setProps({
+          initialValues: {
+            foo: 'bar',
+          },
+        });
+      });
+
+      wrapper.update();
+
+      const { value } = wrapper.find('AdvancedSelect select').props();
+      expect(value).toBe(fixtureData.options[1].displayValue);
+    });
+  });
 });
