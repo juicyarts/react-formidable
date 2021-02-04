@@ -5,7 +5,6 @@ import Formidable, {
   FormidableEvent,
   FormidableState,
   Field,
-  FieldError,
 } from '../../src';
 
 type Bar = {

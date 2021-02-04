@@ -6,24 +6,70 @@ import Formidable, {
   FormidableState,
   Field,
   FieldError,
+  Select,
+  AdvancedSelect,
 } from '../../src';
 
 type Bar = {
   firstname: string;
   age: number;
-  range: {
-    min: number;
-    max: number;
-  };
+  country: string;
+  language: string;
+  device: string[];
 };
 
+const allCountries = ['Germany', 'France', 'Netherlands'];
+const allLanguages = [
+  {
+    value: 'en',
+    displayValue: 'English',
+  },
+  {
+    value: 'de',
+    displayValue: 'German',
+  },
+];
+
+const allDevices = [
+  {
+    displayValue: 'Shaker',
+    value: ['Shaker'],
+  },
+  {
+    displayValue: 'Freezer',
+    value: ['Freezer'],
+  },
+  {
+    displayValue: 'Thermomixer',
+    value: ['Thermomixer'],
+  },
+  {
+    displayValue: 'Centrifuge',
+    value: ['Centrifuge'],
+  },
+  {
+    displayValue: 'Pipette',
+    value: ['Pipette'],
+  },
+  {
+    displayValue: 'Incubator',
+    value: ['Incubator'],
+  },
+  {
+    displayValue: 'All',
+    value: [],
+  },
+  {
+    displayValue: 'Recommended',
+    value: ['Pipette'],
+  },
+];
 const bar: Bar = {
   firstname: 'max',
   age: 1,
-  range: {
-    min: 1,
-    max: 2,
-  },
+  country: allCountries[0],
+  language: allLanguages[0].value,
+  device: ['Pipette'],
 };
 
 function OnBoardForm(): FunctionComponentElement<unknown> {
@@ -52,11 +98,7 @@ function OnBoardForm(): FunctionComponentElement<unknown> {
             <label className="input__label" htmlFor="firstname">
               Firstname
             </label>
-            <Field<Bar>
-              type="text"
-              name="firstname"
-              className="input"
-            />
+            <Field<Bar> type="text" name="firstname" className="input" />
             <FieldError<Bar> name="firstname" />
           </div>
           <div className="input__group">
@@ -68,21 +110,34 @@ function OnBoardForm(): FunctionComponentElement<unknown> {
           </div>
           <div className="input__group">
             <label className="input__label" htmlFor="age">
-              Range
+              Country
             </label>
-            <Field<Bar, 'range'>
-              type="number"
-              name="range"
-              subName="min"
-              className="input"
+            <Select<Bar>
+              name="country"
+              options={allCountries}
+              className="select"
             />
-            <Field<Bar, 'range'>
-              type="number"
-              name="range"
-              subName="max"
-              className="input"
+            <FieldError<Bar> name="age" />
+          </div>
+          <div className="input__group">
+            <label className="input__label" htmlFor="age">
+              Language
+            </label>
+            <AdvancedSelect<Bar>
+              name="language"
+              options={allLanguages}
+              className="select"
             />
-            <FieldError<Bar> name="range" />
+          </div>
+          <div className="input__group">
+            <label className="input__label" htmlFor="age">
+              Foo / advanced select with array as value
+            </label>
+            <AdvancedSelect<Bar>
+              name="device"
+              options={allDevices}
+              className="select"
+            />
           </div>
         </Form>
       </Formidable>
