@@ -21,7 +21,8 @@ export const NameRegex = /^[a-zA-Z0-9 :./_/-]*$/;
 
 const barSchema = yupObject().shape({
   firstname: yupString().required().max(10).matches(NameRegex),
-  age: yupNumber().required().positive().min(12).max(22),
+  age: yupNumber().required().positive().min(12)
+    .max(22),
 });
 
 function NativeForm(): FunctionComponentElement<unknown> {
@@ -35,7 +36,10 @@ function NativeForm(): FunctionComponentElement<unknown> {
 
   return (
     <div className="p-s">
-      <h2>Using Plain form elements</h2>
+      <h3 className="text--title">Using Plain form elements</h3>
+      <p className="p-bottom-s text--regular">
+        In this scenario we use plain html inputs
+      </p>
       <Formidable<Bar>
         initialValues={bar}
         events={[FormidableEvent.Change]}
@@ -52,8 +56,11 @@ function NativeForm(): FunctionComponentElement<unknown> {
         }) => (
           <form onSubmit={handleSubmit} onReset={handleReset}>
             <div className="input__group p-bottom-s">
-              <label className="input__label">Firstname</label>
+              <label htmlFor="firstname" className="input__label">
+                Firstname
+              </label>
               <input
+                id="firstname"
                 className="input"
                 onBlur={handleBlur}
                 onChange={handleChange}

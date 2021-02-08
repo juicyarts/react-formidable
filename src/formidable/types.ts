@@ -1,4 +1,11 @@
-import { ReactNode, ChangeEvent, FormEvent } from 'react';
+import {
+  ReactNode,
+  ChangeEvent,
+  FormEvent,
+  FocusEvent,
+  InputHTMLAttributes,
+  FormHTMLAttributes,
+} from 'react';
 import { ObjectSchema, ValidationError } from 'yup';
 
 export type ExtractValues<V> = V extends FormidableState<infer T> ? T : never;
@@ -26,24 +33,26 @@ export type GetFieldInteraction<T> = (key: keyof T) => boolean;
 export type GetFormInteraction = () => boolean;
 export type GetFieldError<T> = (key: keyof T) => ValidationError | undefined;
 export type SetField<T> = (key: keyof T, value: T[keyof T], eventType: FormidableEvent) => void;
-export type HandleChange = (e: ChangeEvent<HTMLInputElement>) => void;
-export type HandleBlur = (e: React.FocusEvent<HTMLInputElement>) => void;
-export type HandleFocus = (e: React.FocusEvent<HTMLInputElement>) => void;
+export type HandleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
+export type HandleBlur = (e: FocusEvent<HTMLInputElement | HTMLSelectElement>) => void;
+export type HandleFocus = (e: FocusEvent<HTMLInputElement | HTMLSelectElement>) => void;
 export type HandleSubmit = (e: FormEvent<HTMLFormElement>) => void;
 export type HandleReset = (e: FormEvent<HTMLFormElement>) => void;
-export type ValidationMap<T> = Record<keyof T, ValidationError>;
-export type InteractionStateMap<T> = Partial<Record<keyof T, boolean>>;
+
+export type ValidationMap<T> = Record<keyof T, ValidationError | undefined>;
+export type InteractionStateMap<T> = Record<keyof T, boolean | undefined>;
 
 export interface FormidableState<T> {
-  dirty?: InteractionStateMap<T>;
-  touched?: InteractionStateMap<T>;
-  submitted?: InteractionStateMap<T>;
-  errors?: ValidationMap<T>;
+  values: T;
+  dirty: InteractionStateMap<T>;
+  touched: InteractionStateMap<T>;
+  submitted: boolean;
+  errors: ValidationMap<T>;
 }
 
 export type FormidableEventHandler<T> = (
   formValues?: T,
-  formState?: FormidableState<T>,
+  formState?: Omit<FormidableState<T>, 'values'>,
   event?: FormidableEvent,
 ) => void | Promise<void>;
 
@@ -74,9 +83,11 @@ export type ValidateField<T extends Record<string, unknown>> = (
 ) => void;
 
 export interface UseValidator<T> {
-  errors: ValidationMap<T>;
-  getError(name: keyof T): ValidationError;
-  setError(name: keyof T, error?: ValidationError): void;
+  setError(
+    name: keyof T,
+    error?: ValidationError,
+    currentFormState?: FormidableState<T>,
+  ): FormidableState<T>;
 }
 
 export interface UseField<T extends FormidableValues> {
@@ -87,7 +98,7 @@ export interface UseField<T extends FormidableValues> {
     errors?: ValidationError;
   };
   setField: SetField<T>;
-  validateField: ValidateField<T>;
+  // validateField: ValidateField<T>;
 }
 
 export interface UseForm<T extends FormidableValues> {
@@ -95,7 +106,7 @@ export interface UseForm<T extends FormidableValues> {
   formState?: FormidableState<T>;
   getFormTouched: GetFormInteraction;
   getFormDirty: GetFormInteraction;
-  validateForm: ValidateForm<T>;
+  // validateForm: ValidateForm<T>;
   handleSubmit: HandleSubmit;
   handleReset: HandleReset;
 }
@@ -107,8 +118,39 @@ export interface FormidableContextProps<T extends FormidableValues> extends UseF
   getFieldTouched: GetFieldInteraction<T>;
   getFieldDirty: GetFieldInteraction<T>;
   getFormDirty: GetFormInteraction;
-  validateField: ValidateField<T>;
+  // validateField: ValidateField<T>;
   handleChange: HandleChange;
   handleBlur: HandleBlur;
   handleFocus: HandleFocus;
+}
+
+export interface AdvancedSelectOption<T> {
+  displayValue: string;
+  value: T;
+}
+
+export interface AdvancedSelectProps<T extends FormidableValues>
+  extends InputHTMLAttributes<HTMLSelectElement> {
+  name: keyof T & string;
+  options: AdvancedSelectOption<T[keyof T]>[];
+}
+
+export interface FeldErrorProps<T> {
+  name: keyof T;
+}
+
+export interface FieldProps<T extends FormidableValues, K extends keyof T & string = string>
+  extends InputHTMLAttributes<HTMLInputElement> {
+  name: K;
+  subName?: keyof T[K];
+}
+
+export interface FormProps extends FormHTMLAttributes<HTMLFormElement> {
+  children: ReactNode;
+}
+
+export interface SelectProps<T extends FormidableValues>
+  extends InputHTMLAttributes<HTMLSelectElement> {
+  name: keyof T & string;
+  options: string[];
 }

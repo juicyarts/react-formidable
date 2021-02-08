@@ -3,10 +3,9 @@ import React, {
   ChangeEvent,
   FormEvent,
   useContext,
+  useEffect,
 } from 'react';
-
 import { ValidationError } from 'yup';
-
 import { FormidableContext } from './formidable-context';
 
 import {
@@ -16,16 +15,13 @@ import {
   FormidableContextProps,
   UseValidator,
   ValidationMap,
-  InteractionStateMap,
   UseField,
   UseForm,
+  FormidableState,
+  InteractionStateMap,
 } from './types';
 
-function useValidationMap<Values extends FormidableValues>(
-  initialValue: ValidationMap<Values> = {} as ValidationMap<Values>,
-): UseValidator<Values> {
-  const [errors, setErrors] = useState<ValidationMap<Values>>(initialValue);
-
+function useValidationMap<Values extends FormidableValues>(): UseValidator<Values> {
   function transformGroupedErrors(errorMap?: ValidationError): ValidationMap<Values> {
     return errorMap
       ? errorMap?.inner?.reduce(
@@ -35,28 +31,27 @@ function useValidationMap<Values extends FormidableValues>(
       : ({} as ValidationMap<Values>);
   }
 
-  function getError(name: keyof Values): ValidationError {
-    return errors && errors[name];
-  }
-
-  function setError(name: string, newError?: ValidationError): void {
+  function setError(
+    name: string,
+    newError: ValidationError,
+    initialState: FormidableState<Values>,
+  ): FormidableState<Values> {
     if (newError) {
       if (name === 'all') {
-        setErrors(transformGroupedErrors(newError));
-      } else {
-        setErrors({ ...errors, [name]: newError });
+        return { ...initialState, errors: transformGroupedErrors(newError) };
       }
-    } else if (name === 'all') {
-      setErrors(transformGroupedErrors(undefined));
-    } else {
-      setErrors({ ...errors, [name]: undefined });
+      return { ...initialState, errors: { ...initialState.errors, [name]: newError } };
     }
+
+    if (name === 'all') {
+      return { ...initialState, errors: transformGroupedErrors(undefined) };
+    }
+
+    return { ...initialState, errors: { ...initialState.errors, [name]: undefined } };
   }
 
   return {
-    errors,
     setError,
-    getError,
   };
 }
 
@@ -67,98 +62,100 @@ function useFormidable<Values extends FormidableValues>({
   validationSchema,
   validateOn,
 }: FormidableProps<Values>): FormidableContextProps<Values> {
-  const [formValues, setFormValues] = useState<Values | undefined>(initialValues);
-  const [formDirtyState, setFormDirtyState] = useState<InteractionStateMap<Values>>();
-  const [formTouchedState, setFormTouchedState] = useState<InteractionStateMap<Values>>();
-  const { errors, setError, getError } = useValidationMap<Values>();
-  const formState = { dirty: formDirtyState, errors, touched: formTouchedState };
+  const [formState, setFormState] = useState<FormidableState<Values>>({
+    values: initialValues || ({} as Values),
+    errors: {} as ValidationMap<Values>,
+    dirty: {} as InteractionStateMap<Values>,
+    touched: {} as InteractionStateMap<Values>,
+    submitted: false,
+  });
+  const { setError } = useValidationMap<Values>();
 
-  function dispatchEvent(
-    eventType: FormidableEvent,
-    currentFormValues = formValues,
-    currentFormState = formState,
-  ): void {
+  function dispatchEvent(eventType: FormidableEvent, currentFormState = formState): void {
     if (!handleEvent || !events) return;
 
-    if (events[0] === FormidableEvent.All || events?.includes(eventType)) {
-      handleEvent(currentFormValues, currentFormState, eventType);
+    if (events[0] === FormidableEvent.All || events?.includes(eventType) || currentFormState) {
+      const { values, ...rest } = currentFormState;
+      setFormState(currentFormState);
+      handleEvent(values, rest, eventType);
     }
   }
 
   function validateForm(
-    validationInput = formValues,
+    validationInput = formState.values,
     formValidationSchema = validationSchema,
-  ): void {
-    if (!validationSchema || !formValidationSchema) return;
+    currentFormState = formState,
+  ): FormidableState<Values> {
+    if (!validationSchema || !formValidationSchema) return currentFormState;
     try {
       formValidationSchema.validateSync(validationInput, {
         recursive: true,
         abortEarly: false,
       });
-      setError('all', undefined);
+      return setError('all', undefined, currentFormState);
     } catch (err) {
-      setError('all', err);
+      return setError('all', err, currentFormState);
     }
   }
 
   function validateField(
     key: keyof Values,
-    currentFormValues = formValues,
+    currentFormState = formState,
     fieldValidationSchema = validationSchema,
-  ): void {
+  ): FormidableState<Values> {
     try {
       if (fieldValidationSchema) {
-        fieldValidationSchema.validateSyncAt(key as string, currentFormValues);
+        fieldValidationSchema.validateSyncAt(key as string, currentFormState.values);
       }
-      setError(key, undefined);
+      return setError(key, undefined, currentFormState);
     } catch (err) {
-      setError(key, err);
+      return setError(key, err, currentFormState);
     }
   }
 
   function dispatchValidator(
+    key: keyof Values | undefined = undefined,
     eventType: FormidableEvent,
-    currentFormValues = formValues,
-    key?: keyof Values,
-  ): void {
+    currentFormState = formState,
+  ): FormidableState<Values> {
     if (validateOn && (validateOn[0] === FormidableEvent.All || validateOn?.includes(eventType))) {
       if (key) {
-        validateField(key, currentFormValues);
-      } else {
-        validateForm(currentFormValues);
+        return validateField(key, currentFormState);
       }
+      return validateForm(currentFormState.values, validationSchema, formState);
     }
+    return currentFormState;
   }
 
   function getField(
     key: keyof Values,
     defaultValue?: Values[keyof Values],
   ): Values[keyof Values] | undefined {
-    if (!formValues || !key || defaultValue) return undefined;
-    return formValues[key] || defaultValue;
+    if (!formState || !formState.values || !key || defaultValue) return undefined;
+    return formState.values[key] || defaultValue;
   }
 
   function getFieldError(key: keyof Values): ValidationError | undefined {
-    if (!errors) {
+    if (!formState.errors) {
       return undefined;
     }
-    return getError(key);
+    return formState.errors[key];
   }
 
   function getFieldTouched(key: keyof Values): boolean {
-    return !!(formTouchedState && formTouchedState[key]);
+    return !!(formState && formState.touched && formState.touched[key]);
   }
 
   function getFormTouched(): boolean {
-    return !!(formTouchedState && Object.keys(formTouchedState).length);
+    return !!(formState && formState.touched && Object.keys(formState.touched).length);
   }
 
   function getFieldDirty(key: keyof Values): boolean {
-    return !!(formDirtyState && formDirtyState[key]);
+    return !!(formState && formState.dirty && formState.dirty[key]);
   }
 
   function getFormDirty(): boolean {
-    return !!(formDirtyState && Object.keys(formDirtyState).length);
+    return !!(formState && formState.dirty && Object.keys(formState.dirty).length);
   }
 
   function setField(
@@ -166,46 +163,75 @@ function useFormidable<Values extends FormidableValues>({
     value: Values[keyof Values] | string,
     eventType: FormidableEvent,
   ): void {
-    const newFormValues = { ...formValues, [key]: value } as Values;
-    setFormDirtyState({ ...formDirtyState, [key]: true });
-    setFormValues(newFormValues);
-    dispatchValidator(eventType, newFormValues, key);
-    dispatchEvent(eventType, newFormValues);
+    const newFormState = {
+      ...formState,
+      values: { ...formState?.values, [key]: value },
+      touched: {
+        ...formState?.touched,
+        [key]: true,
+      },
+      dirty: {
+        ...formState?.dirty,
+        [key]: true,
+      },
+    };
+
+    dispatchEvent(eventType, dispatchValidator(key, eventType, newFormState));
   }
 
-  function handleChange(e: ChangeEvent<HTMLInputElement>): void {
+  function handleChange(e: ChangeEvent<HTMLInputElement | HTMLSelectElement>): void {
     e.preventDefault();
     setField(e.target.name, e.target.value, FormidableEvent.Change);
   }
 
-  function handleBlur(e: React.FocusEvent<HTMLInputElement>): void {
+  function handleBlur(e: React.FocusEvent<HTMLInputElement | HTMLSelectElement>): void {
     e.preventDefault();
-    dispatchValidator(FormidableEvent.Blur);
-    dispatchEvent(FormidableEvent.Blur);
+    dispatchEvent(FormidableEvent.Blur, dispatchValidator(e.target.name, FormidableEvent.Blur));
   }
 
-  function handleFocus(e: React.FocusEvent<HTMLInputElement>): void {
+  function handleFocus(e: React.FocusEvent<HTMLInputElement | HTMLSelectElement>): void {
     e.preventDefault();
-    setFormTouchedState({ ...formTouchedState, [e.target.name]: true });
-    dispatchValidator(FormidableEvent.Focus);
-    dispatchEvent(FormidableEvent.Focus);
+    const newFormState = {
+      ...formState,
+      touched: {
+        ...formState.touched,
+        [e.target.name]: true,
+      },
+    };
+
+    dispatchEvent(
+      FormidableEvent.Focus,
+      dispatchValidator(e.target.name, FormidableEvent.Focus, newFormState),
+    );
   }
 
   function handleSubmit(e: FormEvent<HTMLFormElement>): void {
     e.preventDefault();
-    setFormDirtyState({});
-    dispatchValidator(FormidableEvent.Submit);
-    dispatchEvent(FormidableEvent.Submit);
+    const newFormidableState = { ...formState, submitted: true };
+    dispatchEvent(
+      FormidableEvent.Submit,
+      dispatchValidator(undefined, FormidableEvent.Submit, newFormidableState),
+    );
   }
 
   function handleReset(e: FormEvent<HTMLFormElement>): void {
     e.preventDefault();
-    setFormValues(initialValues);
-    setFormDirtyState({});
-    setFormTouchedState({});
-    dispatchValidator(FormidableEvent.Reset, initialValues);
-    dispatchEvent(FormidableEvent.Reset, initialValues);
+    const newFormState: FormidableState<Values> = {
+      values: initialValues || ({} as Values),
+      errors: {} as ValidationMap<Values>,
+      dirty: {} as InteractionStateMap<Values>,
+      touched: {} as InteractionStateMap<Values>,
+      submitted: false,
+    };
+    dispatchEvent(
+      FormidableEvent.Reset,
+      dispatchValidator(undefined, FormidableEvent.Reset, newFormState),
+    );
   }
+
+  useEffect(() => {
+    setFormState({ ...formState, values: initialValues || ({} as Values) });
+  }, [initialValues]);
 
   return {
     getField,
@@ -215,14 +241,14 @@ function useFormidable<Values extends FormidableValues>({
     getFormTouched,
     getFieldDirty,
     getFormDirty,
-    validateField,
-    validateForm,
+    // validateField,
+    // validateForm,
     handleChange,
     handleSubmit,
     handleFocus,
     handleBlur,
     handleReset,
-    formValues,
+    formValues: formState.values,
     formState,
   };
 }
@@ -238,7 +264,7 @@ export function useForm<T extends FormidableValues>(): UseForm<T> {
     formState,
     getFormTouched,
     getFormDirty,
-    validateForm,
+    // validateForm,
     handleSubmit,
     handleReset,
   } = useContext(FormidableContext) as FormidableContextProps<T>;
@@ -248,7 +274,7 @@ export function useForm<T extends FormidableValues>(): UseForm<T> {
     formState,
     getFormTouched,
     getFormDirty,
-    validateForm,
+    // validateForm,
     handleSubmit,
     handleReset,
   };
@@ -261,7 +287,7 @@ export function useField<T extends FormidableValues>(name: keyof T): UseField<T>
     getFieldDirty,
     getFieldTouched,
     getFieldError,
-    validateField,
+    // validateField,
   } = useContext(FormidableContext) as FormidableContextProps<T>;
 
   return {
@@ -272,7 +298,7 @@ export function useField<T extends FormidableValues>(name: keyof T): UseField<T>
       errors: getFieldError(name),
     },
     setField,
-    validateField,
+    // validateField,
   };
 }
 
