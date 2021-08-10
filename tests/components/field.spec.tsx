@@ -63,6 +63,7 @@ describe('Field', () => {
           foo: true,
         },
         submitted: false,
+        lastChangedFieldKey: 'foo',
       },
       FormidableEvent.Change,
     );
@@ -88,6 +89,7 @@ describe('Field', () => {
         touched: {},
         dirty: {},
         submitted: false,
+        lastChangedFieldKey: '',
       },
       FormidableEvent.Blur,
     );

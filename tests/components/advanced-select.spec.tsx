@@ -85,6 +85,7 @@ describe('AdvancedSelect', () => {
             foo: true,
           },
           submitted: false,
+          lastChangedFieldKey: 'foo',
         },
         FormidableEvent.Change,
       );
@@ -160,6 +161,7 @@ describe('AdvancedSelect', () => {
             foo: true,
           },
           submitted: false,
+          lastChangedFieldKey: 'foo',
         },
         FormidableEvent.Change,
       );

@@ -68,6 +68,7 @@ function useFormidable<Values extends FormidableValues>({
     dirty: {} as InteractionStateMap<Values>,
     touched: {} as InteractionStateMap<Values>,
     submitted: false,
+    lastChangedFieldKey: '',
   });
   const { setError } = useValidationMap<Values>();
 
@@ -174,6 +175,7 @@ function useFormidable<Values extends FormidableValues>({
         ...formState?.dirty,
         [key]: true,
       },
+      lastChangedFieldKey: key as string,
     };
 
     dispatchEvent(eventType, dispatchValidator(key, eventType, newFormState));
@@ -222,6 +224,7 @@ function useFormidable<Values extends FormidableValues>({
       dirty: {} as InteractionStateMap<Values>,
       touched: {} as InteractionStateMap<Values>,
       submitted: false,
+      lastChangedFieldKey: '',
     };
     dispatchEvent(
       FormidableEvent.Reset,

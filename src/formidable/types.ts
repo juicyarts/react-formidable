@@ -48,6 +48,7 @@ export interface FormidableState<T> {
   touched: InteractionStateMap<T>;
   submitted: boolean;
   errors: ValidationMap<T>;
+  lastChangedFieldKey: string;
 }
 
 export type FormidableEventHandler<T> = (
