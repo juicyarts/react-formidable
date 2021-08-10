@@ -91,6 +91,7 @@ describe('Formidable', () => {
           touched: { foo: true },
           dirty: { foo: true },
           submitted: false,
+          lastChangedFieldKey: 'foo',
         },
         FormidableEvent.Change,
       );
@@ -112,6 +113,7 @@ describe('Formidable', () => {
           touched: {},
           dirty: {},
           submitted: true,
+          lastChangedFieldKey: '',
         },
         FormidableEvent.Submit,
       );
@@ -137,6 +139,7 @@ describe('Formidable', () => {
           touched: {},
           dirty: {},
           submitted: false,
+          lastChangedFieldKey: '',
         },
         FormidableEvent.Blur,
       );
@@ -164,6 +167,7 @@ describe('Formidable', () => {
           },
           dirty: {},
           submitted: false,
+          lastChangedFieldKey: '',
         },
         FormidableEvent.Focus,
       );
@@ -192,6 +196,7 @@ describe('Formidable', () => {
           touched: {},
           dirty: {},
           submitted: false,
+          lastChangedFieldKey: '',
         },
         FormidableEvent.Reset,
       ]);
