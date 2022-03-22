@@ -5,8 +5,16 @@
   "main": "dist/index.cjs.js",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
+  "author": "Hüss Yil <h.yildiz@eppendorf.de>",
+  "license": "UNLICENSED",
   "files": [
     "dist"
+  ],
+  "contributors": [
+    {
+      "name": "Marvin Lackus",
+      "email": "Lackus.M@eppendorf.de"
+    }
   ],
   "scripts": {
     "prebuild": "rimraf dist",
@@ -16,15 +24,16 @@
     "lint:ci": "tsc && eslint \"./{src,tests}/**/*.{ts,tsx}\" -f eslint-formatter-gitlab",
     "test": "jest --watchAll",
     "test:ci": "jest --watchAll=false --coverage",
-    "start": "cd example && yarn start"
+    "start": "cd example && yarn start",
+    "postversion": "git push --follow-tags"
   },
   "devDependencies": {
     "@babel/core": "^7.6.4",
     "@babel/plugin-transform-react-jsx": "^7.3.0",
     "@babel/plugin-transform-typescript": "^7.6.3",
     "@babel/preset-env": "^7.6.3",
-    "@commitlint/config-conventional": "^8.3.4",
-    "@eppendorf/eslint-config": "git+https://oauth2:NsWwBFY9M9ruwsBHcn7E@gitlab.dasgip.de/eppendorf/lib/eslint-config.git#semver:^0.1.1",
+    "@commitlint/config-conventional": "^13.1.0",
+    "@eppendorf/eslint-config": "^0.1.2",
     "@rollup/plugin-babel": "^5.0.2",
     "@rollup/plugin-commonjs": "^13.0.0",
     "@rollup/plugin-node-resolve": "^8.0.0",
@@ -35,7 +44,7 @@
     "@types/yup": "^0.29.2",
     "@typescript-eslint/eslint-plugin": "^3.0.0",
     "@typescript-eslint/parser": "^3.0.0",
-    "commitlint": "^8.3.5",
+    "commitlint": "^13.1.0",
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.2",
     "eslint": "7.1.0",
@@ -48,10 +57,12 @@
     "eslint-plugin-jest": "23.13.1",
     "eslint-plugin-jsx-a11y": "6.2.3",
     "eslint-plugin-react": "7.20.0",
-    "husky": "^4.2.5",
+    "husky": "^7.0.2",
     "jest": "^26.0.1",
     "jest-environment-jsdom-fourteen": "^1.0.1",
     "jest-junit": "^10.0.0",
+    "lint-staged": "^12.3.7",
+    "prettier": "^2.6.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "rimraf": "^3.0.2",
@@ -60,43 +71,7 @@
     "typescript": "^3.9.3",
     "yup": "^0.29.1"
   },
-  "jest": {
-    "testPathIgnorePatterns": [
-      "/node_modules/"
-    ],
-    "testRegex": "spec.(js|ts|tsx)$",
-    "globals": {
-      "Enzyme": true
-    },
-    "testEnvironment": "jest-environment-jsdom-fourteen",
-    "testEnvironmentOptions": {
-      "enzymeAdapter": "react16"
-    },
-    "setupFilesAfterEnv": [
-      "<rootDir>/tests/setupTests.ts"
-    ],
-    "reporters": [
-      "default",
-      [
-        "jest-junit",
-        {
-          "outputDirectory": "<rootDir>/reports/unit/"
-        }
-      ]
-    ],
-    "coverageReporters": [
-      "cobertura",
-      "lcov",
-      "text-summary"
-    ],
-    "coverageDirectory": "<rootDir>/reports/unit",
-    "collectCoverageFrom": [
-      "src/**/*.{js,ts,tsx}",
-      "tests/**/*.{js,ts,tsx}"
-    ],
-    "collectCoverage": true
-  },
   "publishConfig": {
-    "@eppendorf:registry": "https://git.dasgip.de/api/v4/projects/3/packages/npm/"
+    "@eppendorf:registry": "https://gitlab.dasgip.de/api/v4/projects/257/packages/npm/"
   }
 }

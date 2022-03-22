@@ -1,7 +1,0 @@
-{
-  "hooks": {
-    "pre-commit": "node scripts/husky/hook.js pre-commit || yarn lint:ci",
-    "commit-msg": "node scripts/husky/hook.js commit-msg || commitlint -E HUSKY_GIT_PARAMS",
-    "pre-push": "node scripts/husky/hook.js pre-push || yarn test:ci -o"
-  }
-}
