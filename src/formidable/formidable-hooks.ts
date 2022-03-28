@@ -1,13 +1,7 @@
-import React, {
-  useState,
-  ChangeEvent,
-  FormEvent,
-  useContext,
-  useEffect,
-} from 'react';
+import React, { useState, ChangeEvent, FormEvent, useContext, useEffect } from 'react';
 import { ValidationError } from 'yup';
-import { FormidableContext } from './formidable-context';
 
+import { FormidableContext } from './formidable-context';
 import {
   FormidableProps,
   FormidableValues,

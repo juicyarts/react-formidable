@@ -1,38 +1,21 @@
-import React, { FunctionComponentElement } from 'react';
-import {
-  object as yupObject,
-  number as yupNumber,
-  string as yupString,
-} from 'yup';
+/* eslint-disable jsx-a11y/label-has-associated-control -- these are docs, it's fine */
+import React, { FunctionComponentElement, useCallback } from 'react';
 
 import Formidable, { FormidableEvent, FormidableState } from '../../src';
 
-type Bar = {
-  firstname: string;
-  age: number;
-};
-
-const bar: Bar = {
-  firstname: 'max',
-  age: 1,
-};
-
-export const NameRegex = /^[a-zA-Z0-9 :./_/-]*$/;
-
-const barSchema = yupObject().shape({
-  firstname: yupString().required().max(10).matches(NameRegex),
-  age: yupNumber().required().positive().min(12)
-    .max(22),
-});
+import { MockFormType, mockFormData, mockFormSchema } from './utils';
 
 function NativeForm(): FunctionComponentElement<unknown> {
-  function onEvent(
-    values?: Bar,
-    formState?: Partial<FormidableState<Bar>>,
-    event?: FormidableEvent,
-  ): void {
-    console.debug('TEST:', event, formState, values);
-  }
+  const onEvent = useCallback(
+    (
+      values?: Partial<MockFormType>,
+      formState?: Partial<FormidableState<MockFormType>>,
+      event?: FormidableEvent,
+    ): void => {
+      console.debug('Onboard Form | Form changed:', event, formState, values);
+    },
+    [],
+  );
 
   return (
     <div className="p-s">
@@ -40,11 +23,11 @@ function NativeForm(): FunctionComponentElement<unknown> {
       <p className="p-bottom-s text--regular">
         In this scenario we use plain html inputs
       </p>
-      <Formidable<Bar>
-        initialValues={bar}
+      <Formidable<MockFormType>
+        initialValues={mockFormData}
         events={[FormidableEvent.Change]}
         handleEvent={onEvent}
-        validationSchema={barSchema}
+        validationSchema={mockFormSchema}
       >
         {({
           formValues,
@@ -56,19 +39,19 @@ function NativeForm(): FunctionComponentElement<unknown> {
         }) => (
           <form onSubmit={handleSubmit} onReset={handleReset}>
             <div className="input__group p-bottom-s">
-              <label htmlFor="firstname" className="input__label">
-                Firstname
+              <label htmlFor="firstName" className="input__label">
+                First Name
               </label>
               <input
-                id="firstname"
+                id="firstName"
                 className="input"
                 onBlur={handleBlur}
                 onChange={handleChange}
-                value={formValues?.firstname}
+                value={formValues?.firstName}
                 type="text"
-                name="firstname"
+                name="firstName"
               />
-              <span>{getFieldError('firstname')?.message}</span>
+              <span>{getFieldError('firstName')?.message}</span>
             </div>
             <div className="input__group p-bottom-s">
               <label className="input__label">Age</label>
@@ -92,3 +75,4 @@ function NativeForm(): FunctionComponentElement<unknown> {
 }
 
 export default NativeForm;
+/* eslint-enable jsx-a11y/label-has-associated-control -- these are docs, it's fine */

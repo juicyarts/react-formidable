@@ -1,5 +1,6 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import React, { FunctionComponentElement } from 'react';
+import React, { FunctionComponentElement, useCallback } from 'react';
+
 import Formidable, {
   Form,
   FormidableEvent,
@@ -11,7 +12,7 @@ import Formidable, {
 } from '../../src';
 
 type Bar = {
-  firstname: string;
+  firstName: string;
   age: number;
   country: string;
   language: string;
@@ -65,7 +66,7 @@ const allDevices = [
   },
 ];
 const bar: Bar = {
-  firstname: 'max',
+  firstName: 'max',
   age: 1,
   country: allCountries[0],
   language: allLanguages[0].value,
@@ -73,13 +74,16 @@ const bar: Bar = {
 };
 
 function OnBoardForm(): FunctionComponentElement<unknown> {
-  function onEvent(
-    values?: Bar,
-    formState?: Partial<FormidableState<Bar>>,
-    event?: FormidableEvent,
-  ): void {
-    console.debug('TEST:', event, formState, values);
-  }
+  const onEvent = useCallback(
+    (
+      values?: Partial<Bar>,
+      formState?: Partial<FormidableState<Bar>>,
+      event?: FormidableEvent,
+    ): void => {
+      console.debug('Onboard Form | Form changed:', event, formState, values);
+    },
+    [],
+  );
 
   return (
     <div className="p-s">
@@ -95,11 +99,11 @@ function OnBoardForm(): FunctionComponentElement<unknown> {
       >
         <Form>
           <div className="input__group p-bottom-s">
-            <label className="input__label" htmlFor="firstname">
-              Firstname
+            <label className="input__label" htmlFor="firstName">
+              First Name
             </label>
-            <Field<Bar> type="text" name="firstname" className="input" />
-            <FieldError<Bar> name="firstname" />
+            <Field<Bar> type="text" name="firstName" className="input" />
+            <FieldError<Bar> name="firstName" />
           </div>
           <div className="input__group">
             <label className="input__label" htmlFor="age">

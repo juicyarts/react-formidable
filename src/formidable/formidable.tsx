@@ -1,9 +1,10 @@
 import React, { FunctionComponentElement, ReactNode } from 'react';
 
-import { FormidableValues, FormidableComponentProps, FormidableContextProps } from './types';
-import useFormidable from './formidable-hooks';
 import { isFunction } from '../utils/index';
+
 import { FormidableProvider } from './formidable-context';
+import useFormidable from './formidable-hooks';
+import { FormidableValues, FormidableComponentProps, FormidableContextProps } from './types';
 
 function Formidable<Values extends FormidableValues>({
   children,

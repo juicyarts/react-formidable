@@ -1,5 +1,6 @@
-import React from 'react';
+/* eslint-disable react/jsx-props-no-spreading -- this is a test we can live with it */
 import { ReactWrapper, mount } from 'enzyme';
+import React from 'react';
 import { act } from 'react-dom/test-utils';
 import { object as yupObject, string as yupString } from 'yup';
 
@@ -30,14 +31,7 @@ describe('Formidable', () => {
       await act(async () => {
         wrapper = mount(
           <Formidable<InitialFormValues> {...fixtureData} handleEvent={handleEventSpy as any}>
-            {({
-              formValues,
-              handleBlur,
-              handleFocus,
-              handleChange,
-              handleSubmit,
-              handleReset,
-            }) => (
+            {({ formValues, handleBlur, handleFocus, handleChange, handleSubmit, handleReset }) => (
               <form onSubmit={handleSubmit} onReset={handleReset}>
                 <input
                   onBlur={handleBlur}
@@ -232,14 +226,7 @@ describe('Formidable', () => {
             handleEvent={handleEventSpy as any}
             validateOn={[FormidableEvent.All]}
           >
-            {({
-              formValues,
-              handleBlur,
-              handleFocus,
-              handleChange,
-              handleSubmit,
-              handleReset,
-            }) => (
+            {({ formValues, handleBlur, handleFocus, handleChange, handleSubmit, handleReset }) => (
               <form onSubmit={handleSubmit} onReset={handleReset}>
                 <input
                   onBlur={handleBlur}
@@ -286,3 +273,4 @@ describe('Formidable', () => {
     });
   });
 });
+/* eslint-enable react/jsx-props-no-spreading */

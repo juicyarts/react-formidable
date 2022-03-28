@@ -1,9 +1,4 @@
-import React, {
-  FunctionComponentElement,
-  ChangeEvent,
-  useEffect,
-  useState,
-} from 'react';
+import React, { FunctionComponentElement, ChangeEvent, useEffect, useState } from 'react';
 
 import { useField, useFormidableContext } from '../formidable-hooks';
 import {
@@ -49,7 +44,7 @@ function AdvancedSelect<T extends FormidableValues>({
 
   return (
     <select
-      // eslint-disable-next-line react/jsx-props-no-spreading
+      // eslint-disable-next-line react/jsx-props-no-spreading -- whitelisting is not needed
       {...props}
       name={key}
       value={selectedOption?.displayValue || ''}

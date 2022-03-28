@@ -1,4 +1,9 @@
-import React, { FunctionComponentElement, useEffect, useState } from 'react';
+import React, {
+  FunctionComponentElement,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react';
 
 import Formidable, {
   Form,
@@ -7,32 +12,27 @@ import Formidable, {
   Field,
 } from '../../src';
 
-type Bar = {
-  firstname: string;
-  age: number;
-};
-
-const initialBar: Bar = {
-  firstname: 'max',
-  age: 1,
-};
+import { MockFormType, mockFormData } from './utils';
 
 function AsyncForm(): FunctionComponentElement<unknown> {
-  const [bar, setBar] = useState<Partial<Bar>>({ age: 0 });
+  const [bar, setBar] = useState<Partial<MockFormType>>({ age: 0 });
 
-  function onEvent(
-    values?: Partial<Bar>,
-    formState?: Partial<FormidableState<Bar>>,
-    event?: FormidableEvent,
-  ): void {
-    console.debug('Async Form | Form changed:', event, formState, values);
-    if (values) setBar(values);
-  }
+  const onEvent = useCallback(
+    (
+      values?: Partial<MockFormType>,
+      formState?: Partial<FormidableState<MockFormType>>,
+      event?: FormidableEvent,
+    ): void => {
+      console.debug('Async Form | Form changed:', event, formState, values);
+      if (values) setBar(values);
+    },
+    [],
+  );
 
   useEffect(() => {
     setTimeout(() => {
-      setBar(initialBar);
-      console.debug('Async Form | Initial data updated:', initialBar);
+      setBar(mockFormData);
+      console.debug('Async Form | Initial data updated:', mockFormData);
     }, 5000);
   }, []);
 
@@ -42,23 +42,27 @@ function AsyncForm(): FunctionComponentElement<unknown> {
       <p className="p-bottom-s text--regular">
         In this scenario the initial data changes after a given timeout
       </p>
-      <Formidable<Partial<Bar>>
+      <Formidable<Partial<MockFormType>>
         initialValues={bar}
         handleEvent={onEvent}
         validateOn={[FormidableEvent.Change]}
       >
         <Form>
           <div className="input__group p-bottom-s">
-            <label className="input__label" htmlFor="firstname">
-              Firstname
+            <label className="input__label" htmlFor="firstName">
+              First Name
             </label>
-            <Field<Bar> type="text" name="firstname" className="input" />
+            <Field<MockFormType>
+              type="text"
+              name="firstName"
+              className="input"
+            />
           </div>
           <div className="input__group">
             <label className="input__label" htmlFor="age">
               Age
             </label>
-            <Field<Bar> type="number" name="age" className="input" />
+            <Field<MockFormType> type="number" name="age" className="input" />
           </div>
         </Form>
       </Formidable>
