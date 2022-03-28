@@ -6,6 +6,7 @@ web_modules
 dist
 .build
 build
+.eslintcache
 
 # artifacts
 reports
