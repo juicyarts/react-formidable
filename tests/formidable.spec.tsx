@@ -1,6 +1,5 @@
-/* eslint-disable react/jsx-props-no-spreading -- this is a test we can live with it */
 import { ReactWrapper, mount } from 'enzyme';
-import React from 'react';
+import React, { FunctionComponentElement } from 'react';
 import { act } from 'react-dom/test-utils';
 import { object as yupObject, string as yupString } from 'yup';
 
@@ -10,6 +9,42 @@ type InitialFormValues = {
   foo: string;
 };
 
+interface FormidableWithTestWrapperProps {
+  input: FormidableComponentProps<InitialFormValues>;
+}
+
+function FormidableWithTestWrapper({
+  input,
+}: FormidableWithTestWrapperProps): FunctionComponentElement<FormidableWithTestWrapperProps> {
+  return (
+    <Formidable<InitialFormValues> {...input}>
+      {({
+        handleBlur,
+        handleFocus,
+        handleChange,
+        handleSubmit,
+        handleReset,
+        getField,
+        getFieldError,
+      }) => (
+        <form onSubmit={handleSubmit} onReset={handleReset}>
+          <input
+            onBlur={handleBlur}
+            onChange={handleChange}
+            onFocus={handleFocus}
+            value={getField('foo')}
+            type="text"
+            name="foo"
+          />
+          {!!getFieldError('foo') && <span className="error">{getFieldError('foo').message}</span>}
+          <input type="reset" />
+          <button type="submit">FoO</button>
+        </form>
+      )}
+    </Formidable>
+  );
+}
+
 describe('Formidable', () => {
   describe('without validation', () => {
     const fixtureData: FormidableComponentProps<InitialFormValues> = {
@@ -18,42 +53,21 @@ describe('Formidable', () => {
         foo: 'initial',
       },
     };
+
     let wrapper: ReactWrapper;
-    let handleEventSpy: jest.SpyInstance;
 
     afterEach(() => {
-      handleEventSpy.mockReset();
+      fixtureData.handleEvent = undefined;
     });
 
     beforeEach(async () => {
-      handleEventSpy = jest.fn();
+      fixtureData.handleEvent = jest.fn();
 
       await act(async () => {
-        wrapper = mount(
-          <Formidable<InitialFormValues> {...fixtureData} handleEvent={handleEventSpy as any}>
-            {({ formValues, handleBlur, handleFocus, handleChange, handleSubmit, handleReset }) => (
-              <form onSubmit={handleSubmit} onReset={handleReset}>
-                <input
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                  onFocus={handleFocus}
-                  value={formValues?.foo}
-                  type="text"
-                  name="foo"
-                />
-                <input type="reset" />
-                <button type="submit">FoO</button>
-              </form>
-            )}
-          </Formidable>,
-        );
+        wrapper = mount(<FormidableWithTestWrapper input={fixtureData} />);
       });
 
       wrapper.update();
-    });
-
-    it('should render without crashing', () => {
-      expect(wrapper).toBeTruthy();
     });
 
     it('should adopt initial values', () => {
@@ -78,7 +92,7 @@ describe('Formidable', () => {
       const { value } = wrapper.find('input[name="foo"]').props();
       expect(value).toBe('baz');
 
-      expect(handleEventSpy).toHaveBeenCalledWith(
+      expect(fixtureData.handleEvent).toHaveBeenCalledWith(
         { foo: 'baz' },
         {
           errors: {},
@@ -98,7 +112,7 @@ describe('Formidable', () => {
 
       wrapper.update();
 
-      expect(handleEventSpy).toHaveBeenCalledWith(
+      expect(fixtureData.handleEvent).toHaveBeenCalledWith(
         {
           foo: 'initial',
         },
@@ -124,7 +138,7 @@ describe('Formidable', () => {
 
       wrapper.update();
 
-      expect(handleEventSpy).toHaveBeenCalledWith(
+      expect(fixtureData.handleEvent).toHaveBeenCalledWith(
         {
           foo: 'initial',
         },
@@ -150,7 +164,7 @@ describe('Formidable', () => {
 
       wrapper.update();
 
-      expect(handleEventSpy).toHaveBeenCalledWith(
+      expect(fixtureData.handleEvent).toHaveBeenCalledWith(
         {
           foo: 'initial',
         },
@@ -181,7 +195,7 @@ describe('Formidable', () => {
 
       wrapper.update();
 
-      expect(handleEventSpy.mock.calls[1]).toEqual([
+      expect((fixtureData.handleEvent as any).mock.calls[1]).toEqual([
         {
           foo: 'initial',
         },
@@ -203,40 +217,20 @@ describe('Formidable', () => {
       initialValues: {
         foo: 'initial',
       },
+      events: [FormidableEvent.Submit],
     };
+
     let wrapper: ReactWrapper;
-    let handleEventSpy: jest.SpyInstance;
 
     afterEach(() => {
-      handleEventSpy.mockReset();
+      fixtureData.handleEvent = undefined;
     });
 
     beforeEach(async () => {
-      handleEventSpy = jest.fn();
+      fixtureData.handleEvent = jest.fn();
 
       await act(async () => {
-        wrapper = mount(
-          <Formidable<InitialFormValues>
-            {...fixtureData}
-            handleEvent={handleEventSpy as any}
-            events={[FormidableEvent.Submit]}
-          >
-            {({ formValues, handleBlur, handleFocus, handleChange, handleSubmit, handleReset }) => (
-              <form onSubmit={handleSubmit} onReset={handleReset}>
-                <input
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                  onFocus={handleFocus}
-                  value={formValues?.foo}
-                  type="text"
-                  name="foo"
-                />
-                <input type="reset" />
-                <button type="submit">FoO</button>
-              </form>
-            )}
-          </Formidable>,
-        );
+        wrapper = mount(<FormidableWithTestWrapper input={fixtureData} />);
       });
 
       wrapper.update();
@@ -256,7 +250,7 @@ describe('Formidable', () => {
 
       const { value } = wrapper.find('input[name="foo"]').props();
       expect(value).toBe('baz');
-      expect(handleEventSpy).not.toHaveBeenCalled();
+      expect(fixtureData.handleEvent).not.toHaveBeenCalled();
     });
 
     it('should not call handleEvent on blur', async () => {
@@ -269,7 +263,7 @@ describe('Formidable', () => {
       });
 
       wrapper.update();
-      expect(handleEventSpy).not.toHaveBeenCalled();
+      expect(fixtureData.handleEvent).not.toHaveBeenCalled();
     });
 
     it('should call handleEvent on submit', async () => {
@@ -279,7 +273,7 @@ describe('Formidable', () => {
 
       wrapper.update();
 
-      expect(handleEventSpy).toHaveBeenCalledWith(
+      expect(fixtureData.handleEvent).toHaveBeenCalledWith(
         {
           foo: 'initial',
         },
@@ -300,75 +294,90 @@ describe('Formidable', () => {
       foo: yupString().required().max(10),
     });
 
-    const fixtureData: FormidableComponentProps<InitialFormValues> = {
-      children: {},
-      initialValues: {
-        foo: 'initial',
-      },
-      validationSchema,
-    };
-    let wrapper: ReactWrapper;
-    let handleEventSpy: jest.SpyInstance;
+    describe('when validateOn is set to `Change`', () => {
+      const fixtureData: FormidableComponentProps<InitialFormValues> = {
+        children: {},
+        initialValues: {
+          foo: 'initial',
+        },
+        validationSchema,
+        validateOn: [FormidableEvent.Change],
+      };
 
-    afterEach(() => {
-      handleEventSpy.mockReset();
-    });
+      let wrapper: ReactWrapper;
 
-    beforeEach(async () => {
-      handleEventSpy = jest.fn();
-
-      await act(async () => {
-        wrapper = mount(
-          <Formidable<InitialFormValues>
-            {...fixtureData}
-            handleEvent={handleEventSpy as any}
-            validateOn={[FormidableEvent.All]}
-          >
-            {({ formValues, handleBlur, handleFocus, handleChange, handleSubmit, handleReset }) => (
-              <form onSubmit={handleSubmit} onReset={handleReset}>
-                <input
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                  onFocus={handleFocus}
-                  value={formValues?.foo}
-                  type="text"
-                  name="foo"
-                />
-                <input type="reset" />
-                <button type="submit">FoO</button>
-              </form>
-            )}
-          </Formidable>,
-        );
+      afterEach(() => {
+        fixtureData.handleEvent = undefined;
       });
 
-      wrapper.update();
-    });
+      beforeEach(async () => {
+        fixtureData.handleEvent = jest.fn();
 
-    it('should render without crashing', () => {
-      expect(wrapper).toBeTruthy();
-    });
-
-    it('should have validation error', async () => {
-      await act(async () => {
-        wrapper.find('input[name="foo"]').simulate('change', {
-          target: {
-            name: 'foo',
-            value: 'bazbazbazbaz',
-          },
+        await act(async () => {
+          wrapper = mount(<FormidableWithTestWrapper input={fixtureData} />);
         });
+
+        wrapper.update();
       });
 
-      wrapper.update();
+      it('should not have validation errors initially', () => {
+        expect(wrapper.find('.error').exists()).toBeFalsy();
+      });
 
-      const { value } = wrapper.find('input[name="foo"]').props();
-      expect(value).toBe('bazbazbazbaz');
+      it('should have validation error after change', async () => {
+        await act(async () => {
+          wrapper.find('input[name="foo"]').simulate('change', {
+            target: {
+              name: 'foo',
+              value: 'somethingLongerThan10Chars',
+            },
+          });
+        });
 
-      expect(handleEventSpy.mock.calls[0][0]).toEqual({ foo: 'bazbazbazbaz' });
+        wrapper.update();
+        expect(wrapper.find('.error').exists()).toBeTruthy();
 
-      const { errors } = handleEventSpy.mock.calls[0][1];
-      expect(errors.foo).toBeTruthy();
+        const { value } = wrapper.find('input[name="foo"]').props();
+        expect(value).toBe('somethingLongerThan10Chars');
+
+        expect((fixtureData.handleEvent as any).mock.calls[0][0]).toEqual({
+          foo: 'somethingLongerThan10Chars',
+        });
+
+        const { errors } = (fixtureData.handleEvent as any).mock.calls[0][1];
+        expect(errors.foo).toBeTruthy();
+      });
+    });
+
+    describe('when validateOn is set to `Init`', () => {
+      const fixtureData: FormidableComponentProps<InitialFormValues> = {
+        children: {},
+        initialValues: {
+          foo: 'somethingLongerThan10Chars',
+        },
+        validationSchema,
+        validateOn: [FormidableEvent.Init],
+      };
+
+      let wrapper: ReactWrapper;
+
+      afterEach(() => {
+        fixtureData.handleEvent = undefined;
+      });
+
+      beforeEach(async () => {
+        fixtureData.handleEvent = jest.fn();
+
+        await act(async () => {
+          wrapper = mount(<FormidableWithTestWrapper input={fixtureData} />);
+        });
+
+        wrapper.update();
+      });
+
+      it('should have validation error initially', () => {
+        expect(wrapper.find('.error').exists()).toBeTruthy();
+      });
     });
   });
 });
-/* eslint-enable react/jsx-props-no-spreading */

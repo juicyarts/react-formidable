@@ -114,11 +114,15 @@ function useFormidable<Values extends FormidableValues>({
     eventType: FormidableEvent,
     currentFormState = formState,
   ): FormidableState<Values> {
-    if (validateOn && (validateOn[0] === FormidableEvent.All || validateOn?.includes(eventType))) {
+    if (
+      validateOn &&
+      (validateOn.includes(FormidableEvent.All) || validateOn.includes(eventType))
+    ) {
       if (key) {
         return validateField(key, currentFormState);
       }
-      return validateForm(currentFormState.values, validationSchema, formState);
+      const foo = validateForm(currentFormState.values, validationSchema, formState);
+      return foo;
     }
     return currentFormState;
   }
@@ -228,7 +232,15 @@ function useFormidable<Values extends FormidableValues>({
   }
 
   useEffect(() => {
-    setFormState({ ...formState, values: initialValues || ({} as Values) });
+    const initialFormState = { ...formState, values: initialValues || ({} as Values) };
+    setFormState(initialFormState);
+
+    if (validateOn && validateOn.includes(FormidableEvent.Init)) {
+      dispatchEvent(
+        FormidableEvent.Init,
+        dispatchValidator(undefined, FormidableEvent.Init, initialFormState),
+      );
+    }
   }, [initialValues]);
 
   return {

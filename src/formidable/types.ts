@@ -25,6 +25,7 @@ export enum FormidableEvent {
   Change = 'change',
   Focus = 'focus',
   Reset = 'reset',
+  Init = 'init',
 }
 
 export type GetField<T> = (key: keyof T, defaultValue?: T[keyof T]) => T[keyof T] | undefined;
