@@ -1,5 +1,6 @@
-import React from 'react';
+/* eslint-disable react/jsx-props-no-spreading -- this is a test we can live with it */
 import { ReactWrapper, mount } from 'enzyme';
+import React from 'react';
 import { act } from 'react-dom/test-utils';
 import { object as yupObject, string as yupString } from 'yup';
 
@@ -30,14 +31,7 @@ describe('Formidable', () => {
       await act(async () => {
         wrapper = mount(
           <Formidable<InitialFormValues> {...fixtureData} handleEvent={handleEventSpy as any}>
-            {({
-              formValues,
-              handleBlur,
-              handleFocus,
-              handleChange,
-              handleSubmit,
-              handleReset,
-            }) => (
+            {({ formValues, handleBlur, handleFocus, handleChange, handleSubmit, handleReset }) => (
               <form onSubmit={handleSubmit} onReset={handleReset}>
                 <input
                   onBlur={handleBlur}
@@ -203,6 +197,104 @@ describe('Formidable', () => {
     });
   });
 
+  describe('when only submit event is chosen', () => {
+    const fixtureData: FormidableComponentProps<InitialFormValues> = {
+      children: {},
+      initialValues: {
+        foo: 'initial',
+      },
+    };
+    let wrapper: ReactWrapper;
+    let handleEventSpy: jest.SpyInstance;
+
+    afterEach(() => {
+      handleEventSpy.mockReset();
+    });
+
+    beforeEach(async () => {
+      handleEventSpy = jest.fn();
+
+      await act(async () => {
+        wrapper = mount(
+          <Formidable<InitialFormValues>
+            {...fixtureData}
+            handleEvent={handleEventSpy as any}
+            events={[FormidableEvent.Submit]}
+          >
+            {({ formValues, handleBlur, handleFocus, handleChange, handleSubmit, handleReset }) => (
+              <form onSubmit={handleSubmit} onReset={handleReset}>
+                <input
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                  onFocus={handleFocus}
+                  value={formValues?.foo}
+                  type="text"
+                  name="foo"
+                />
+                <input type="reset" />
+                <button type="submit">FoO</button>
+              </form>
+            )}
+          </Formidable>,
+        );
+      });
+
+      wrapper.update();
+    });
+
+    it('should not call handleEvent on change', async () => {
+      await act(async () => {
+        wrapper.find('input[name="foo"]').simulate('change', {
+          target: {
+            name: 'foo',
+            value: 'baz',
+          },
+        });
+      });
+
+      wrapper.update();
+
+      const { value } = wrapper.find('input[name="foo"]').props();
+      expect(value).toBe('baz');
+      expect(handleEventSpy).not.toHaveBeenCalled();
+    });
+
+    it('should not call handleEvent on blur', async () => {
+      await act(async () => {
+        wrapper.find('input[name="foo"]').simulate('blur', {
+          target: {
+            name: 'foo',
+          },
+        });
+      });
+
+      wrapper.update();
+      expect(handleEventSpy).not.toHaveBeenCalled();
+    });
+
+    it('should call handleEvent on submit', async () => {
+      await act(async () => {
+        wrapper.find('button').simulate('submit');
+      });
+
+      wrapper.update();
+
+      expect(handleEventSpy).toHaveBeenCalledWith(
+        {
+          foo: 'initial',
+        },
+        {
+          errors: {},
+          touched: {},
+          dirty: {},
+          submitted: true,
+          lastChangedFieldKey: '',
+        },
+        FormidableEvent.Submit,
+      );
+    });
+  });
+
   describe('with validation', () => {
     const validationSchema = yupObject().shape({
       foo: yupString().required().max(10),
@@ -232,14 +324,7 @@ describe('Formidable', () => {
             handleEvent={handleEventSpy as any}
             validateOn={[FormidableEvent.All]}
           >
-            {({
-              formValues,
-              handleBlur,
-              handleFocus,
-              handleChange,
-              handleSubmit,
-              handleReset,
-            }) => (
+            {({ formValues, handleBlur, handleFocus, handleChange, handleSubmit, handleReset }) => (
               <form onSubmit={handleSubmit} onReset={handleReset}>
                 <input
                   onBlur={handleBlur}
@@ -286,3 +371,4 @@ describe('Formidable', () => {
     });
   });
 });
+/* eslint-enable react/jsx-props-no-spreading */

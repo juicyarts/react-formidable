@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-props-no-spreading */
 import React, { FunctionComponentElement } from 'react';
 
 import { useFormidableContext, useField } from '../formidable-hooks';
@@ -14,6 +13,7 @@ function Field<T extends FormidableValues, K extends keyof T & string = keyof T 
 
   return (
     <input
+      // eslint-disable-next-line react/jsx-props-no-spreading -- whitelisting is not needed
       {...props}
       id={key}
       name={key}
@@ -26,4 +26,3 @@ function Field<T extends FormidableValues, K extends keyof T & string = keyof T 
 }
 
 export default Field;
-/* eslint-enable react/jsx-props-no-spreading */

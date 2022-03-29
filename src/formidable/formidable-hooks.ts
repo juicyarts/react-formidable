@@ -1,13 +1,7 @@
-import React, {
-  useState,
-  ChangeEvent,
-  FormEvent,
-  useContext,
-  useEffect,
-} from 'react';
+import React, { useState, ChangeEvent, FormEvent, useContext, useEffect } from 'react';
 import { ValidationError } from 'yup';
-import { FormidableContext } from './formidable-context';
 
+import { FormidableContext } from './formidable-context';
 import {
   FormidableProps,
   FormidableValues,
@@ -75,9 +69,10 @@ function useFormidable<Values extends FormidableValues>({
   function dispatchEvent(eventType: FormidableEvent, currentFormState = formState): void {
     if (!handleEvent || !events) return;
 
-    if (events[0] === FormidableEvent.All || events?.includes(eventType) || currentFormState) {
-      const { values, ...rest } = currentFormState;
-      setFormState(currentFormState);
+    const { values, ...rest } = currentFormState;
+    setFormState(currentFormState);
+
+    if (events.includes(FormidableEvent.All) || events.includes(eventType)) {
       handleEvent(values, rest, eventType);
     }
   }

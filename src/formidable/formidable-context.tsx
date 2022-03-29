@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-props-no-spreading -- whitelisting is not needed */
 import React, { createContext, ReactElement, ComponentType } from 'react';
 
 import { FormidableValues, FormidableContextProps } from './types';
@@ -18,3 +19,4 @@ function withFormidable<T extends FormidableValues>(
 }
 
 export default withFormidable;
+/* eslint-enable react/jsx-props-no-spreading -- whitelisting is not needed */

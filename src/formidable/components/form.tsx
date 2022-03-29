@@ -1,13 +1,13 @@
-/* eslint-disable react/jsx-props-no-spreading */
 import React, { FunctionComponentElement } from 'react';
 
-import { FormProps } from '../types';
 import { useFormidableContext } from '../formidable-hooks';
+import { FormProps } from '../types';
 
 function Form({ children, ...rest }: FormProps): FunctionComponentElement<FormProps> {
   const { handleSubmit, handleReset } = useFormidableContext();
 
   return (
+    // eslint-disable-next-line react/jsx-props-no-spreading -- whitelisting is not needed
     <form onSubmit={handleSubmit} onReset={handleReset} {...rest}>
       {children}
     </form>
@@ -15,4 +15,3 @@ function Form({ children, ...rest }: FormProps): FunctionComponentElement<FormPr
 }
 
 export default Form;
-/* eslint-enable react/jsx-props-no-spreading */

@@ -1,5 +1,5 @@
-import React from 'react';
 import { ReactWrapper, mount } from 'enzyme';
+import React from 'react';
 import { act } from 'react-dom/test-utils';
 
 import Formidable, { Field, FormidableEvent } from '../../src';
