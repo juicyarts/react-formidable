@@ -7,6 +7,7 @@ import Formidable, { FormidableComponentProps, FormidableEvent } from '../src';
 
 type InitialFormValues = {
   foo: string;
+  bar: string;
 };
 
 interface FormidableWithTestWrapperProps {
@@ -26,6 +27,9 @@ function FormidableWithTestWrapper({
         handleReset,
         getField,
         getFieldError,
+        getFormInvalid,
+        getFormTouched,
+        getFormDirty,
       }) => (
         <form onSubmit={handleSubmit} onReset={handleReset}>
           <input
@@ -36,7 +40,12 @@ function FormidableWithTestWrapper({
             type="text"
             name="foo"
           />
-          {!!getFieldError('foo') && <span className="error">{getFieldError('foo').message}</span>}
+          {getFieldError('foo') && (
+            <span className="field_error">{getFieldError('foo').message}</span>
+          )}
+          {getFormInvalid() && <span className="form_invalid">form invalid</span>}
+          {getFormTouched() && <span className="form_touched">form touched</span>}
+          {getFormDirty() && <span className="form_dirty">form dirty</span>}
           <input type="reset" />
           <button type="submit">FoO</button>
         </form>
@@ -51,6 +60,7 @@ describe('Formidable', () => {
       children: {},
       initialValues: {
         foo: 'initial',
+        bar: 'initial',
       },
     };
 
@@ -77,6 +87,12 @@ describe('Formidable', () => {
       });
     });
 
+    it('should be fresh and clean', () => {
+      expect(wrapper.find('.form_invalid').exists()).toBeFalsy();
+      expect(wrapper.find('.form_touched').exists()).toBeFalsy();
+      expect(wrapper.find('.form_dirty').exists()).toBeFalsy();
+    });
+
     it('should handle change', async () => {
       await act(async () => {
         wrapper.find('input[name="foo"]').simulate('change', {
@@ -93,7 +109,7 @@ describe('Formidable', () => {
       expect(value).toBe('baz');
 
       expect(fixtureData.handleEvent).toHaveBeenCalledWith(
-        { foo: 'baz' },
+        { foo: 'baz', bar: 'initial' },
         {
           errors: {},
           touched: { foo: true },
@@ -103,6 +119,9 @@ describe('Formidable', () => {
         },
         FormidableEvent.Change,
       );
+
+      expect(wrapper.find('.form_touched').exists()).toBeTruthy();
+      expect(wrapper.find('.form_dirty').exists()).toBeTruthy();
     });
 
     it('should handle submit', async () => {
@@ -115,6 +134,7 @@ describe('Formidable', () => {
       expect(fixtureData.handleEvent).toHaveBeenCalledWith(
         {
           foo: 'initial',
+          bar: 'initial',
         },
         {
           errors: {},
@@ -141,6 +161,7 @@ describe('Formidable', () => {
       expect(fixtureData.handleEvent).toHaveBeenCalledWith(
         {
           foo: 'initial',
+          bar: 'initial',
         },
         {
           errors: {},
@@ -167,6 +188,7 @@ describe('Formidable', () => {
       expect(fixtureData.handleEvent).toHaveBeenCalledWith(
         {
           foo: 'initial',
+          bar: 'initial',
         },
         {
           errors: {},
@@ -198,6 +220,7 @@ describe('Formidable', () => {
       expect((fixtureData.handleEvent as any).mock.calls[1]).toEqual([
         {
           foo: 'initial',
+          bar: 'initial',
         },
         {
           errors: {},
@@ -216,6 +239,7 @@ describe('Formidable', () => {
       children: {},
       initialValues: {
         foo: 'initial',
+        bar: 'initial',
       },
       events: [FormidableEvent.Submit],
     };
@@ -276,6 +300,7 @@ describe('Formidable', () => {
       expect(fixtureData.handleEvent).toHaveBeenCalledWith(
         {
           foo: 'initial',
+          bar: 'initial',
         },
         {
           errors: {},
@@ -292,6 +317,7 @@ describe('Formidable', () => {
   describe('with validation', () => {
     const validationSchema = yupObject().shape({
       foo: yupString().required().max(10),
+      bar: yupString().required().max(5),
     });
 
     describe('when validateOn is set to `Change`', () => {
@@ -299,6 +325,7 @@ describe('Formidable', () => {
         children: {},
         initialValues: {
           foo: 'initial',
+          bar: 'initial',
         },
         validationSchema,
         validateOn: [FormidableEvent.Change],
@@ -321,7 +348,8 @@ describe('Formidable', () => {
       });
 
       it('should not have validation errors initially', () => {
-        expect(wrapper.find('.error').exists()).toBeFalsy();
+        expect(wrapper.find('.field_error').exists()).toBeFalsy();
+        expect(wrapper.find('.form_invalid').exists()).toBeFalsy();
       });
 
       it('should have validation error after change', async () => {
@@ -335,17 +363,42 @@ describe('Formidable', () => {
         });
 
         wrapper.update();
-        expect(wrapper.find('.error').exists()).toBeTruthy();
+        expect(wrapper.find('.field_error').exists()).toBeTruthy();
+        expect(wrapper.find('.form_invalid').exists()).toBeTruthy();
 
         const { value } = wrapper.find('input[name="foo"]').props();
         expect(value).toBe('somethingLongerThan10Chars');
 
         expect((fixtureData.handleEvent as any).mock.calls[0][0]).toEqual({
           foo: 'somethingLongerThan10Chars',
+          bar: 'initial',
         });
 
         const { errors } = (fixtureData.handleEvent as any).mock.calls[0][1];
         expect(errors.foo).toBeTruthy();
+      });
+
+      it('should remove validation error after change to valid', async () => {
+        await act(async () => {
+          wrapper.find('input[name="foo"]').simulate('change', {
+            target: {
+              name: 'foo',
+              value: 'shortThing',
+            },
+          });
+        });
+
+        wrapper.update();
+        expect(wrapper.find('.field_error').exists()).toBeFalsy();
+        expect(wrapper.find('.form_invalid').exists()).toBeFalsy();
+
+        expect((fixtureData.handleEvent as any).mock.calls[0][0]).toEqual({
+          foo: 'shortThing',
+          bar: 'initial',
+        });
+
+        const { errors } = (fixtureData.handleEvent as any).mock.calls[0][1];
+        expect(errors.foo).not.toBeTruthy();
       });
     });
 
@@ -354,6 +407,7 @@ describe('Formidable', () => {
         children: {},
         initialValues: {
           foo: 'somethingLongerThan10Chars',
+          bar: 'ini',
         },
         validationSchema,
         validateOn: [FormidableEvent.Init],
@@ -389,7 +443,8 @@ describe('Formidable', () => {
         const { errors } = (fixtureData.handleEvent as any).mock.calls[0][1];
         expect(Object.keys(errors)).toHaveLength(1);
         expect(errors).toHaveProperty('foo');
-        expect(wrapper.find('.error').exists()).toBeTruthy();
+        expect(wrapper.find('.field_error').exists()).toBeTruthy();
+        expect(wrapper.find('.form_invalid').exists()).toBeTruthy();
       });
     });
   });
