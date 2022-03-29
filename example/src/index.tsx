@@ -2,7 +2,10 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import App from './app';
+
+/* eslint-disable import/no-unresolved -- in the build pipeline this can not be resolved by eslint */
 import '@eppendorf/css/dist/visionize/visionize.min.css';
+/* eslint-enable import/no-unresolved -- in the build pipeline this can not be resolved by eslint */
 import './app.scss';
 
 ReactDOM.render(
