@@ -375,7 +375,20 @@ describe('Formidable', () => {
         wrapper.update();
       });
 
-      it('should have validation error initially', () => {
+      it('should call handleEvent for `init`', () => {
+        expect(fixtureData.handleEvent).toHaveBeenCalled();
+      });
+
+      it('should not have touched or dirty states', () => {
+        const { dirty, touched } = (fixtureData.handleEvent as any).mock.calls[0][1];
+        expect(Object.keys(dirty)).toHaveLength(0);
+        expect(Object.keys(touched)).toHaveLength(0);
+      });
+
+      it('should have validation errors initially', () => {
+        const { errors } = (fixtureData.handleEvent as any).mock.calls[0][1];
+        expect(Object.keys(errors)).toHaveLength(1);
+        expect(errors).toHaveProperty('foo');
         expect(wrapper.find('.error').exists()).toBeTruthy();
       });
     });
