@@ -1,5 +1,5 @@
 module.exports = {
-  extends: ['@eppendorf/eslint-config/jest', '@eppendorf/eslint-config/react.typescript'],
+  extends: ['@eppendorf/eslint-config/react.typescript', '@eppendorf/eslint-config/jest'],
   parserOptions: {
     project: './tsconfig.eslint.json',
   },

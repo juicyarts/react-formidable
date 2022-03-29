@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-props-no-spreading -- this is a test we can live with it */
 import { ReactWrapper, mount } from 'enzyme';
 import React from 'react';
 import { act } from 'react-dom/test-utils';
@@ -229,5 +228,3 @@ describe('AdvancedSelect', () => {
     });
   });
 });
-
-/* eslint-enable react/jsx-props-no-spreading */
