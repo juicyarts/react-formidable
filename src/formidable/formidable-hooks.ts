@@ -121,8 +121,7 @@ function useFormidable<Values extends FormidableValues>({
       if (key) {
         return validateField(key, currentFormState);
       }
-      const foo = validateForm(currentFormState.values, validationSchema, formState);
-      return foo;
+      return validateForm(currentFormState.values, validationSchema, formState);
     }
     return currentFormState;
   }
