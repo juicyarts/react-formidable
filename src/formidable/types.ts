@@ -99,7 +99,6 @@ export interface UseField<T extends FormidableValues> {
     errors?: ValidationError;
   };
   setField: SetField<T>;
-  // validateField: ValidateField<T>;
 }
 
 export interface UseForm<T extends FormidableValues> {
@@ -107,7 +106,7 @@ export interface UseForm<T extends FormidableValues> {
   formState?: FormidableState<T>;
   getFormTouched: GetFormInteraction;
   getFormDirty: GetFormInteraction;
-  // validateForm: ValidateForm<T>;
+  getFormInvalid: GetFormInteraction;
   handleSubmit: HandleSubmit;
   handleReset: HandleReset;
 }
@@ -118,8 +117,6 @@ export interface FormidableContextProps<T extends FormidableValues> extends UseF
   getFieldError: GetFieldError<T>;
   getFieldTouched: GetFieldInteraction<T>;
   getFieldDirty: GetFieldInteraction<T>;
-  getFormDirty: GetFormInteraction;
-  // validateField: ValidateField<T>;
   handleChange: HandleChange;
   handleBlur: HandleBlur;
   handleFocus: HandleFocus;
