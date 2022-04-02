@@ -90,7 +90,7 @@ function useFormidable<Values extends FormidableValues>({
       });
       return setError('all', undefined, currentFormState);
     } catch (err) {
-      return setError('all', err, currentFormState);
+      return setError('all', err as any, currentFormState);
     }
   }
 
@@ -105,7 +105,7 @@ function useFormidable<Values extends FormidableValues>({
       }
       return setError(key, undefined, currentFormState);
     } catch (err) {
-      return setError(key, err, currentFormState);
+      return setError(key, err as any, currentFormState);
     }
   }
 
@@ -114,7 +114,10 @@ function useFormidable<Values extends FormidableValues>({
     eventType: FormidableEvent,
     currentFormState = formState,
   ): FormidableState<Values> {
-    if (validateOn && (validateOn[0] === FormidableEvent.All || validateOn?.includes(eventType))) {
+    if (
+      validateOn &&
+      (validateOn.includes(FormidableEvent.All) || validateOn.includes(eventType))
+    ) {
       if (key) {
         return validateField(key, currentFormState);
       }
@@ -132,10 +135,16 @@ function useFormidable<Values extends FormidableValues>({
   }
 
   function getFieldError(key: keyof Values): ValidationError | undefined {
-    if (!formState.errors) {
-      return undefined;
-    }
     return formState.errors[key];
+  }
+
+  function getFormInvalid(): boolean {
+    return Object.keys(formState.errors).reduce((hasError, key): boolean => {
+      if (formState.errors[key] !== undefined) {
+        return true;
+      }
+      return hasError;
+    }, false as boolean); // TS strangeness :()
   }
 
   function getFieldTouched(key: keyof Values): boolean {
@@ -228,19 +237,26 @@ function useFormidable<Values extends FormidableValues>({
   }
 
   useEffect(() => {
-    setFormState({ ...formState, values: initialValues || ({} as Values) });
+    const initialFormState = { ...formState, values: initialValues || ({} as Values) };
+    setFormState(initialFormState);
+
+    if (validateOn && validateOn.includes(FormidableEvent.Init)) {
+      dispatchEvent(
+        FormidableEvent.Init,
+        dispatchValidator(undefined, FormidableEvent.Init, initialFormState),
+      );
+    }
   }, [initialValues]);
 
   return {
     getField,
     setField,
     getFieldError,
+    getFormInvalid,
     getFieldTouched,
     getFormTouched,
     getFieldDirty,
     getFormDirty,
-    // validateField,
-    // validateForm,
     handleChange,
     handleSubmit,
     handleFocus,
@@ -262,9 +278,9 @@ export function useForm<T extends FormidableValues>(): UseForm<T> {
     formState,
     getFormTouched,
     getFormDirty,
-    // validateForm,
     handleSubmit,
     handleReset,
+    getFormInvalid,
   } = useContext(FormidableContext) as FormidableContextProps<T>;
 
   return {
@@ -272,21 +288,16 @@ export function useForm<T extends FormidableValues>(): UseForm<T> {
     formState,
     getFormTouched,
     getFormDirty,
-    // validateForm,
+    getFormInvalid,
     handleSubmit,
     handleReset,
   };
 }
 
 export function useField<T extends FormidableValues>(name: keyof T): UseField<T> {
-  const {
-    formValues,
-    setField,
-    getFieldDirty,
-    getFieldTouched,
-    getFieldError,
-    // validateField,
-  } = useContext(FormidableContext) as FormidableContextProps<T>;
+  const { formValues, setField, getFieldDirty, getFieldTouched, getFieldError } = useContext(
+    FormidableContext,
+  ) as FormidableContextProps<T>;
 
   return {
     value: formValues && formValues[name],
@@ -296,7 +307,6 @@ export function useField<T extends FormidableValues>(name: keyof T): UseField<T>
       errors: getFieldError(name),
     },
     setField,
-    // validateField,
   };
 }
 
