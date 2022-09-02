@@ -22,4 +22,5 @@ module.exports = {
   coverageDirectory: '<rootDir>/reports/unit',
   collectCoverageFrom: ['src/**/*.{js,ts,tsx}', 'tests/**/*.{js,ts,tsx}'],
   collectCoverage: true,
+  watchPathIgnorePatterns: ['node_modules'],
 };

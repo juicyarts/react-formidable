@@ -5,6 +5,7 @@ import { FormProps } from '../types';
 
 function Form({ children, ...rest }: FormProps): FunctionComponentElement<FormProps> {
   const { handleSubmit, handleReset } = useFormidableContext();
+  console.log(handleReset);
 
   return (
     // eslint-disable-next-line react/jsx-props-no-spreading -- whitelisting is not needed
