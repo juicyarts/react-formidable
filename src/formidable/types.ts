@@ -152,3 +152,11 @@ export interface SelectProps<T extends FormidableValues>
   name: keyof T & string;
   options: string[];
 }
+
+export interface DateAndTimePickerProps<
+  T extends FormidableValues,
+  K extends keyof T & string = string,
+> extends InputHTMLAttributes<HTMLInputElement> {
+  name: K;
+  label?: string;
+}

@@ -9,6 +9,7 @@ import Formidable, {
   FieldError,
   Select,
   AdvancedSelect,
+  DateAndTimePicker,
 } from '../../src';
 
 type Bar = {
@@ -17,6 +18,7 @@ type Bar = {
   country: string;
   language: string;
   device: string[];
+  startDateTime: string;
 };
 
 const allCountries = ['Germany', 'France', 'Netherlands'];
@@ -71,6 +73,7 @@ const bar: Bar = {
   country: allCountries[0],
   language: allLanguages[0].value,
   device: ['Pipette'],
+  startDateTime: new Date().toISOString(),
 };
 
 function OnBoardForm(): FunctionComponentElement<unknown> {
@@ -141,6 +144,17 @@ function OnBoardForm(): FunctionComponentElement<unknown> {
               name="device"
               options={allDevices}
               className="select"
+            />
+          </div>
+          <div className="row flex__ai--flex-end">
+            <DateAndTimePicker<Bar>
+              label="time"
+              id="startDateTime"
+              name="startDateTime"
+              className="input"
+              min={new Date().toISOString()}
+              // disabled={!isAllowedToEdit('startDateTime')}
+              required
             />
           </div>
         </Form>
