@@ -92,7 +92,7 @@ export interface UseValidator<T> {
 }
 
 export interface UseField<T extends FormidableValues> {
-  value?: T[keyof T];
+  value: T[keyof T];
   fieldState: {
     dirty: boolean;
     touched: boolean;

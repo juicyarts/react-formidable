@@ -17,10 +17,6 @@ function Field<T extends FormidableValues, K extends keyof T & string = keyof T 
       {...props}
       id={key}
       name={key}
-      value={String(value)}
-      onChange={handleChange}
-      onBlur={handleBlur}
-      onFocus={handleFocus}
     />
   );
 }

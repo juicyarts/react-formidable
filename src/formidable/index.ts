@@ -4,6 +4,7 @@ export { default as Select } from './components/select';
 export { default as FieldError } from './components/field-error';
 export { default as AdvancedSelect } from './components/advanced-select';
 export { default as DateAndTimePicker } from './components/date-and-time-picker';
+export { default as PlainField } from './components/plain-field';
 
 export * from './formidable-hooks';
 export { default as useFormidable } from './formidable-hooks';

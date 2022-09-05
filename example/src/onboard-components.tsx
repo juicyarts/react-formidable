@@ -100,64 +100,66 @@ function OnBoardForm(): FunctionComponentElement<unknown> {
         handleEvent={onEvent}
         validateOn={[FormidableEvent.Change]}
       >
-        <Form>
-          <div className="input__group p-bottom-s">
-            <label className="input__label" htmlFor="firstName">
-              First Name
-            </label>
-            <Field<Bar> type="text" name="firstName" className="input" />
-            <FieldError<Bar> name="firstName" />
-          </div>
-          <div className="input__group">
-            <label className="input__label" htmlFor="age">
-              Age
-            </label>
-            <Field<Bar> type="number" name="age" className="input" />
-            <FieldError<Bar> name="age" />
-          </div>
-          <div className="input__group">
-            <label className="input__label" htmlFor="age">
-              Country
-            </label>
-            <Select<Bar>
-              name="country"
-              options={allCountries}
-              className="select"
-            />
-            <FieldError<Bar> name="age" />
-          </div>
-          <div className="input__group">
-            <label className="input__label" htmlFor="age">
-              Language
-            </label>
-            <AdvancedSelect<Bar>
-              name="language"
-              options={allLanguages}
-              className="select"
-            />
-          </div>
-          <div className="input__group">
-            <label className="input__label" htmlFor="age">
-              Foo / advanced select with array as value
-            </label>
-            <AdvancedSelect<Bar>
-              name="device"
-              options={allDevices}
-              className="select"
-            />
-          </div>
-          <div className="row flex__ai--flex-end">
-            <DateAndTimePicker<Bar>
-              label="time"
-              id="startDateTime"
-              name="startDateTime"
-              className="input"
-              min={new Date().toISOString()}
-              // disabled={!isAllowedToEdit('startDateTime')}
-              required
-            />
-          </div>
-        </Form>
+        {({ formState }) => (
+          <Form>
+            <div className="input__group p-bottom-s">
+              <label className="input__label" htmlFor="firstName">
+                First Name
+              </label>
+              <Field<Bar> type="text" name="firstName" className="input" />
+              <FieldError<Bar> name="firstName" />
+            </div>
+            <div className="input__group">
+              <label className="input__label" htmlFor="age">
+                Age
+              </label>
+              <Field<Bar> type="number" name="age" className="input" />
+              <FieldError<Bar> name="age" />
+            </div>
+            <div className="input__group">
+              <label className="input__label" htmlFor="age">
+                Country
+              </label>
+              <Select<Bar>
+                name="country"
+                options={allCountries}
+                className="select"
+              />
+              <FieldError<Bar> name="age" />
+            </div>
+            <div className="input__group">
+              <label className="input__label" htmlFor="age">
+                Language
+              </label>
+              <AdvancedSelect<Bar>
+                name="language"
+                options={allLanguages}
+                className="select"
+              />
+            </div>
+            <div className="input__group">
+              <label className="input__label" htmlFor="age">
+                Foo / advanced select with array as value
+              </label>
+              <AdvancedSelect<Bar>
+                name="device"
+                options={allDevices}
+                className="select"
+              />
+            </div>
+            <div className="row flex__ai--flex-end">
+              <DateAndTimePicker<Bar>
+                label="time"
+                id="startDateTime"
+                name="startDateTime"
+                className="input"
+                min={new Date().toISOString()}
+                required
+              />
+            </div>
+            <pre>{JSON.stringify(formState?.values, null, 2)}</pre>
+          </Form>
+        )}
       </Formidable>
     </div>
   );

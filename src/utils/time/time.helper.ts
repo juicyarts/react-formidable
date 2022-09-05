@@ -1,12 +1,12 @@
 export enum DateTimeFormat {
-  YYYMMDD = 'YYYY-MM-DD',
+  YYYYMMDD = 'YYYY-MM-DD',
   HHMM = 'HH:mm',
 }
 
 // FIXME: this is not localizable and will break in some situation
 // should rely on formatjs
 export function formatDateTimeString(
-  dateTimeString: string | undefined,
+  dateTimeString: string,
   dateTimeFormat: DateTimeFormat,
 ): string {
   if (!dateTimeString) {
@@ -30,4 +30,16 @@ export function formatDateTimeString(
         .toString()
         .padStart(2, '0')}-${input.getDate().toString().padStart(2, '0')}`;
   }
+}
+
+export function formatDateTimeStringToTime(
+  dateTimeString: string,
+): ReturnType<typeof formatDateTimeString> {
+  return formatDateTimeString(dateTimeString, DateTimeFormat.HHMM);
+}
+
+export function formatDateTimeStringToDate(
+  dateTimeString: string,
+): ReturnType<typeof formatDateTimeString> {
+  return formatDateTimeString(dateTimeString, DateTimeFormat.YYYYMMDD);
 }
