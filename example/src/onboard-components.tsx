@@ -9,6 +9,7 @@ import Formidable, {
   FieldError,
   Select,
   AdvancedSelect,
+  Textarea,
 } from '../../src';
 
 type Bar = {
@@ -17,6 +18,7 @@ type Bar = {
   country: string;
   language: string;
   device: string[];
+  description: string;
 };
 
 const allCountries = ['Germany', 'France', 'Netherlands'];
@@ -71,6 +73,7 @@ const bar: Bar = {
   country: allCountries[0],
   language: allLanguages[0].value,
   device: ['Pipette'],
+  description: 'ExampleDescription '.repeat(10),
 };
 
 function OnBoardForm(): FunctionComponentElement<unknown> {
@@ -142,6 +145,12 @@ function OnBoardForm(): FunctionComponentElement<unknown> {
               options={allDevices}
               className="select"
             />
+          </div>
+          <div className="input__group">
+            <label className="input__label" htmlFor="age">
+              Description
+            </label>
+            <Textarea<Bar> name="description" className="textarea" />
           </div>
         </Form>
       </Formidable>
