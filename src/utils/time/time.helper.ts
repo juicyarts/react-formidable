@@ -6,7 +6,7 @@ export enum DateTimeFormat {
 // FIXME: this is not localizable and will break in some situation
 // should rely on formatjs
 export function formatDateTimeString(
-  dateTimeString: string,
+  dateTimeString: string | undefined,
   dateTimeFormat: DateTimeFormat,
 ): string {
   if (!dateTimeString) {

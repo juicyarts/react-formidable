@@ -92,7 +92,7 @@ export interface UseValidator<T> {
 }
 
 export interface UseField<T extends FormidableValues> {
-  value: T[keyof T];
+  value?: T[keyof T];
   fieldState: {
     dirty: boolean;
     touched: boolean;
@@ -159,4 +159,8 @@ export interface DateAndTimePickerProps<
 > extends InputHTMLAttributes<HTMLInputElement> {
   name: K;
   label?: string;
+}
+
+export interface PlainFieldProps extends InputHTMLAttributes<HTMLInputElement> {
+  key?: string;
 }

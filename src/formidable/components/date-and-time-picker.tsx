@@ -27,23 +27,26 @@ function DateAndTimePicker<
   const maxDate = useMemo(() => (max ? formatDateTimeStringToDate(String(max)) : undefined), [max]);
   const maxTime = useMemo(() => (max ? formatDateTimeStringToTime(String(max)) : undefined), [max]);
 
-  const handleChange = useCallback((ev: ChangeEvent<HTMLInputElement>): void => {
-    if (typeof value === 'string') {
-      if (ev.target.type === 'time') {
-        setField(
-          key,
-          `${formatDateTimeStringToDate(value)}T${ev.target.value}` as T[keyof T],
-          FormidableEvent.Change,
-        );
-      } else {
-        setField(
-          key,
-          `${ev.target.value}T${formatDateTimeStringToTime(value)}` as T[keyof T],
-          FormidableEvent.Change,
-        );
+  const handleChange = useCallback(
+    (ev: ChangeEvent<HTMLInputElement>): void => {
+      if (typeof value === 'string') {
+        if (ev.target.type === 'time') {
+          setField(
+            key,
+            `${formatDateTimeStringToDate(value)}T${ev.target.value}` as T[keyof T],
+            FormidableEvent.Change,
+          );
+        } else {
+          setField(
+            key,
+            `${ev.target.value}T${formatDateTimeStringToTime(value)}` as T[keyof T],
+            FormidableEvent.Change,
+          );
+        }
       }
-    }
-  }, []);
+    },
+    [value],
+  );
 
   return (
     <>

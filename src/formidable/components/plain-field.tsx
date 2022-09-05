@@ -1,5 +1,4 @@
 /* eslint-disable react/jsx-props-no-spreading -- react no like but its unreasonable to pass each input prop by hand */
-
 import React, { FunctionComponentElement } from 'react';
 
 import { PlainFieldProps } from '../types';
