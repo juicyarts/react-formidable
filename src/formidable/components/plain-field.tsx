@@ -5,7 +5,12 @@ import { PlainFieldProps } from '../types';
 
 function PlainField(props: PlainFieldProps): FunctionComponentElement<PlainFieldProps> {
   // eslint-disable-next-line react/destructuring-assignment -- props.name should get passed on but we need the id as well
-  return <input id={`${props.name}`} {...props} className="input" />;
+  return (
+    <>
+      <input id={`${props.name}`} {...props} className="input" />
+      <pre>{JSON.stringify(props.value, null, 2)}</pre>
+    </>
+  );
 }
 
 export default PlainField;

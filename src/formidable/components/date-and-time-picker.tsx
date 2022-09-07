@@ -8,6 +8,7 @@ import {
 import { useField } from '../formidable-hooks';
 import { DateAndTimePickerProps, FormidableValues, FormidableEvent } from '../types';
 
+import Field from './field';
 import PlainField from './plain-field';
 
 function DateAndTimePicker<
@@ -54,7 +55,35 @@ function DateAndTimePicker<
         <label htmlFor={key} className="input__label">
           {label}
         </label>
-        <PlainField
+
+        <div>
+          <h3>Field</h3>
+
+          <Field
+            key={`${key}1`}
+            {...props}
+            name={key}
+            type="date"
+            value={formatDateTimeStringToDate(String(value))}
+            min={minDate}
+            max={maxDate}
+            onChange={handleChange}
+          />
+          <Field
+            key={`${key}2`}
+            {...props}
+            name={key}
+            type="time"
+            value={formatDateTimeStringToTime(String(value))}
+            min={minTime}
+            max={maxTime}
+            onChange={handleChange}
+          />
+        </div>
+
+        <h3 style={{ marginTop: 30 }}>PlainField</h3>
+
+        {/* <PlainField
           key={`${key}1`}
           {...props}
           name={key}
@@ -64,8 +93,6 @@ function DateAndTimePicker<
           max={maxDate}
           onChange={handleChange}
         />
-      </div>
-      <div className="input__group col-4">
         <PlainField
           key={`${key}2`}
           {...props}
@@ -75,7 +102,7 @@ function DateAndTimePicker<
           min={minTime}
           max={maxTime}
           onChange={handleChange}
-        />
+        /> */}
       </div>
     </>
   );

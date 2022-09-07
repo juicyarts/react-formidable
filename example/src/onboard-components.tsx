@@ -160,62 +160,17 @@ function OnBoardForm(): FunctionComponentElement<unknown> {
                 required
               />
             </div>
-            <pre>{JSON.stringify(formState?.values, null, 2)}</pre>
+            <div className="input__group">
+              <label className="input__label" htmlFor="age">
+                Description
+              </label>
+              <Textarea<Bar> name="description" className="textarea" />
+            </div>
+            <pre>
+              {JSON.stringify(formState?.values.startDateTime, null, 2)}
+            </pre>
           </Form>
         )}
-        <Form>
-          <div className="input__group p-bottom-s">
-            <label className="input__label" htmlFor="firstName">
-              First Name
-            </label>
-            <Field<Bar> type="text" name="firstName" className="input" />
-            <FieldError<Bar> name="firstName" />
-          </div>
-          <div className="input__group">
-            <label className="input__label" htmlFor="age">
-              Age
-            </label>
-            <Field<Bar> type="number" name="age" className="input" />
-            <FieldError<Bar> name="age" />
-          </div>
-          <div className="input__group">
-            <label className="input__label" htmlFor="age">
-              Country
-            </label>
-            <Select<Bar>
-              name="country"
-              options={allCountries}
-              className="select"
-            />
-            <FieldError<Bar> name="age" />
-          </div>
-          <div className="input__group">
-            <label className="input__label" htmlFor="age">
-              Language
-            </label>
-            <AdvancedSelect<Bar>
-              name="language"
-              options={allLanguages}
-              className="select"
-            />
-          </div>
-          <div className="input__group">
-            <label className="input__label" htmlFor="age">
-              Foo / advanced select with array as value
-            </label>
-            <AdvancedSelect<Bar>
-              name="device"
-              options={allDevices}
-              className="select"
-            />
-          </div>
-          <div className="input__group">
-            <label className="input__label" htmlFor="age">
-              Description
-            </label>
-            <Textarea<Bar> name="description" className="textarea" />
-          </div>
-        </Form>
       </Formidable>
     </div>
   );
