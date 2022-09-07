@@ -6,6 +6,7 @@ import { TextareaProps, FormidableValues } from '../types';
 
 function Textarea<T extends FormidableValues, K extends keyof T & string = keyof T & string>({
   name: key,
+  rows = 5,
   ...props
 }: TextareaProps<T, K>): FunctionComponentElement<TextareaProps<T, K>> {
   const { value } = useField(key);
@@ -19,7 +20,7 @@ function Textarea<T extends FormidableValues, K extends keyof T & string = keyof
       onChange={handleChange}
       onBlur={handleBlur}
       onFocus={handleFocus}
-      rows={5}
+      rows={rows}
     />
   );
 }
