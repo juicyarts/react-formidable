@@ -5,10 +5,9 @@ import {
   formatDateTimeStringToTime,
   formatDateTimeStringToDate,
 } from '../../utils/time/time.helper';
-import { useField } from '../formidable-hooks';
+import { useField, useFormidableContext } from '../formidable-hooks';
 import { DateAndTimePickerProps, FormidableValues, FormidableEvent } from '../types';
 
-import Field from './field';
 import PlainField from './plain-field';
 
 function DateAndTimePicker<
@@ -21,6 +20,7 @@ function DateAndTimePicker<
   max,
   ...props
 }: DateAndTimePickerProps<T, K>): FunctionComponentElement<DateAndTimePickerProps<T, K>> {
+  const { handleBlur, handleFocus } = useFormidableContext<T>();
   const { value, setField } = useField<T>(key);
 
   const minDate = useMemo(() => (min ? formatDateTimeStringToDate(String(min)) : undefined), [min]);
@@ -55,35 +55,7 @@ function DateAndTimePicker<
         <label htmlFor={key} className="input__label">
           {label}
         </label>
-
-        <div>
-          <h3>Field</h3>
-
-          <Field
-            key={`${key}1`}
-            {...props}
-            name={key}
-            type="date"
-            value={formatDateTimeStringToDate(String(value))}
-            min={minDate}
-            max={maxDate}
-            onChange={handleChange}
-          />
-          <Field
-            key={`${key}2`}
-            {...props}
-            name={key}
-            type="time"
-            value={formatDateTimeStringToTime(String(value))}
-            min={minTime}
-            max={maxTime}
-            onChange={handleChange}
-          />
-        </div>
-
-        <h3 style={{ marginTop: 30 }}>PlainField</h3>
-
-        {/* <PlainField
+        <PlainField
           key={`${key}1`}
           {...props}
           name={key}
@@ -92,7 +64,11 @@ function DateAndTimePicker<
           min={minDate}
           max={maxDate}
           onChange={handleChange}
+          onBlur={handleBlur}
+          onFocus={handleFocus}
         />
+      </div>
+      <div className="input__group col-4">
         <PlainField
           key={`${key}2`}
           {...props}
@@ -102,7 +78,9 @@ function DateAndTimePicker<
           min={minTime}
           max={maxTime}
           onChange={handleChange}
-        /> */}
+          onBlur={handleBlur}
+          onFocus={handleFocus}
+        />
       </div>
     </>
   );
