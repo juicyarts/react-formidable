@@ -166,9 +166,6 @@ function OnBoardForm(): FunctionComponentElement<unknown> {
               </label>
               <Textarea<Bar> name="description" className="textarea" />
             </div>
-            <pre>
-              {JSON.stringify(formState?.values.startDateTime, null, 2)}
-            </pre>
           </Form>
         )}
       </Formidable>
