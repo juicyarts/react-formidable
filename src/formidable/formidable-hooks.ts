@@ -185,17 +185,23 @@ function useFormidable<Values extends FormidableValues>({
     dispatchEvent(eventType, dispatchValidator(key, eventType, newFormState));
   }
 
-  function handleChange(e: ChangeEvent<HTMLInputElement | HTMLSelectElement>): void {
+  function handleChange(
+    e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
+  ): void {
     e.preventDefault();
     setField(e.target.name, e.target.value, FormidableEvent.Change);
   }
 
-  function handleBlur(e: React.FocusEvent<HTMLInputElement | HTMLSelectElement>): void {
+  function handleBlur(
+    e: React.FocusEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
+  ): void {
     e.preventDefault();
     dispatchEvent(FormidableEvent.Blur, dispatchValidator(e.target.name, FormidableEvent.Blur));
   }
 
-  function handleFocus(e: React.FocusEvent<HTMLInputElement | HTMLSelectElement>): void {
+  function handleFocus(
+    e: React.FocusEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
+  ): void {
     e.preventDefault();
     const newFormState = {
       ...formState,
