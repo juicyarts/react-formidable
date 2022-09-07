@@ -160,6 +160,17 @@ export interface SelectProps<T extends FormidableValues>
   options: string[];
 }
 
+export interface DateAndTimePickerProps<
+  T extends FormidableValues,
+  K extends keyof T & string = string,
+> extends InputHTMLAttributes<HTMLInputElement> {
+  name: K;
+  label?: string;
+}
+
+export interface PlainFieldProps extends InputHTMLAttributes<HTMLInputElement> {
+  key?: string;
+}
 export interface TextareaProps<
   T extends FormidableValues,
   K extends keyof T & string = keyof T & string,

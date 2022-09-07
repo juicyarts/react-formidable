@@ -3,6 +3,8 @@ import React, { FunctionComponentElement } from 'react';
 import { useFormidableContext, useField } from '../formidable-hooks';
 import { FieldProps, FormidableValues } from '../types';
 
+import PlainField from './plain-field';
+
 function Field<T extends FormidableValues, K extends keyof T & string = keyof T & string>({
   name: key,
   subName,
@@ -12,12 +14,12 @@ function Field<T extends FormidableValues, K extends keyof T & string = keyof T 
   const { value } = useField<T>(key);
 
   return (
-    <input
+    <PlainField
       // eslint-disable-next-line react/jsx-props-no-spreading -- whitelisting is not needed
       {...props}
       id={key}
       name={key}
-      value={value as string}
+      value={String(value)}
       onChange={handleChange}
       onBlur={handleBlur}
       onFocus={handleFocus}
