@@ -140,7 +140,6 @@ export interface FeldErrorProps<T> {
 export interface FieldProps<T extends FormidableValues, K extends keyof T & string = string>
   extends InputHTMLAttributes<HTMLInputElement> {
   name: K;
-  subName?: keyof T[K];
 }
 
 export interface FormProps extends FormHTMLAttributes<HTMLFormElement> {

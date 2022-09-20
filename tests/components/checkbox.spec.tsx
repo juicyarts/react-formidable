@@ -59,8 +59,8 @@ describe('Checkbox', () => {
                 name="fooObjectArray"
                 value={e.name}
                 id={e.name}
-                nameProp="name"
-                booleanPropName="enabled"
+                displayKey="name"
+                booleanKey="enabled"
               />
             </li>
           ))}
@@ -74,9 +74,7 @@ describe('Checkbox', () => {
   });
 
   it('should throw an error if data is object array but identifier props are missing', () => {
-    let errorCount = 0;
-
-    try {
+    expect(() =>
       wrapper.setProps({
         children: (
           <ul>
@@ -87,15 +85,34 @@ describe('Checkbox', () => {
             ))}
           </ul>
         ),
-      });
-    } catch (err) {
-      errorCount += 1;
-      expect(err.message).toBe(
-        'fieldValue is object[] but "booleanPropName", "nameProp" or both have not been set',
-      );
-    }
+      }),
+    ).toThrowError(
+      'fieldValue is object[] but either "booleanKey" and/or "displayKey" have not been set or are not named correctly. Please check these props.',
+    );
+  });
 
-    expect(errorCount).toBe(1);
+  it('should throw an error if data is object array but identifier props are present but named incorrectly', () => {
+    expect(() =>
+      wrapper.setProps({
+        children: (
+          <ul>
+            {initialValues.fooObjectArray.map((e) => (
+              <li key={e.name}>
+                <Checkbox<InitialFormValues>
+                  name="fooObjectArray"
+                  value={e.name}
+                  id={e.name}
+                  displayKey="invalidKeyName"
+                  booleanKey="invalidKeyName"
+                />
+              </li>
+            ))}
+          </ul>
+        ),
+      }),
+    ).toThrowError(
+      'fieldValue is object[] but either "booleanKey" and/or "displayKey" have not been set or are not named correctly. Please check these props.',
+    );
   });
 
   describe('handles changes', () => {

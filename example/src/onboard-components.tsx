@@ -182,8 +182,8 @@ function OnBoardForm(): FunctionComponentElement<unknown> {
                       name="features"
                       value={e.name}
                       id={e.name}
-                      booleanPropName="enabled"
-                      nameProp="name"
+                      booleanKey="enabled"
+                      displayKey="name"
                     />
                     <label htmlFor={e.name} className="checkboxLabel">
                       {e.name}

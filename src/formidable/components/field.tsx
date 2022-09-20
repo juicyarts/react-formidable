@@ -5,7 +5,6 @@ import { FieldProps, FormidableValues } from '../types';
 
 function Field<T extends FormidableValues, K extends keyof T & string = keyof T & string>({
   name: key,
-  subName,
   ...props
 }: FieldProps<T, K>): FunctionComponentElement<FieldProps<T, K>> {
   const { handleChange, handleBlur, handleFocus } = useFormidableContext<T>();
