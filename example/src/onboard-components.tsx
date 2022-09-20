@@ -164,17 +164,19 @@ function OnBoardForm(): FunctionComponentElement<unknown> {
               />
             </div>
 
-            <div className="input__group">
+            <div className="input__group m-y-l">
               <label className="input__label" htmlFor="isChecked">
-                isChecked
+                Checkbox: single boolean key
               </label>
               <Checkbox<Bar> name="isChecked" className="checkbox" />
+              <pre className="m-top-s">
+                {JSON.stringify(formState?.values.isChecked, null, 2)}
+              </pre>
             </div>
-            <div className="input__group">
+            <div className="input__group m-y-l">
               <label className="input__label" htmlFor="isChecked">
-                Checkbox
+                Checkboxes: object array
               </label>
-
               <ul>
                 {formState?.values.features.map((e) => (
                   <li>
@@ -191,6 +193,14 @@ function OnBoardForm(): FunctionComponentElement<unknown> {
                   </li>
                 ))}
               </ul>
+              <pre className="m-top-s">
+                {JSON.stringify(formState?.values.features, null, 2)}
+              </pre>
+            </div>
+            <div className="input__group m-y-l">
+              <label className="input__label" htmlFor="isChecked">
+                Checkboxes: string array
+              </label>
               <ul>
                 {availableRoles.map((e) => (
                   <li>
@@ -201,8 +211,10 @@ function OnBoardForm(): FunctionComponentElement<unknown> {
                   </li>
                 ))}
               </ul>
+              <pre className="m-top-s">
+                {JSON.stringify(formState?.values.roles, null, 2)}
+              </pre>
             </div>
-            <pre>{JSON.stringify(formState?.values, null, 2)}</pre>
           </Form>
         )}
       </Formidable>

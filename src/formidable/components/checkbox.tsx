@@ -1,12 +1,7 @@
 import React, { FunctionComponentElement, useMemo, useCallback } from 'react';
 
 import { useField } from '../formidable-hooks';
-import { FormidableEvent, FieldProps, FormidableValues } from '../types';
-
-export interface AdditionalCheckboxProps {
-  booleanKey?: string;
-  displayKey?: string;
-}
+import { FormidableEvent, FieldProps, FormidableValues, AdditionalCheckboxProps } from '../types';
 
 function Checkbox<T extends FormidableValues, K extends keyof T & string = keyof T & string>({
   name: key,
@@ -24,15 +19,17 @@ function Checkbox<T extends FormidableValues, K extends keyof T & string = keyof
     [],
   );
 
-  const isInvalidObjectArray = useMemo(
+  const isValidObjectArray = useMemo(
     () =>
-      Array.isArray(fieldValue) &&
-      !isStringArray(fieldValue) &&
-      !(booleanKey && displayKey && fieldValue[0][booleanKey] && fieldValue[0][displayKey]),
+      !(
+        Array.isArray(fieldValue) &&
+        !isStringArray(fieldValue) &&
+        !(booleanKey && displayKey && fieldValue[0][booleanKey] && fieldValue[0][displayKey])
+      ),
     [],
   );
 
-  if (isInvalidObjectArray) {
+  if (!isValidObjectArray) {
     throw new Error(
       'fieldValue is object[] but either "booleanKey" and/or "displayKey" have not been set or are not named correctly. Please check these props.',
     );
@@ -73,11 +70,6 @@ function Checkbox<T extends FormidableValues, K extends keyof T & string = keyof
         return fieldValue.includes(displayValue);
       }
       if (booleanKey && displayKey) {
-        console.log('undefined fieldvalue', fieldValue);
-        console.log(
-          'undefined find?',
-          fieldValue.find((e) => e[displayKey] === props.id)[booleanKey],
-        );
         return fieldValue.find((e) => e[displayKey] === props.id)[booleanKey];
       }
     }

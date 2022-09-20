@@ -151,3 +151,8 @@ export interface SelectProps<T extends FormidableValues>
   name: keyof T & string;
   options: string[];
 }
+
+export interface AdditionalCheckboxProps {
+  booleanKey?: string;
+  displayKey?: string;
+}
