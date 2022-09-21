@@ -13,6 +13,9 @@ type InitialFormValues = {
 
 const mockStringArrayOptions = ['value1', 'value2', 'value3'];
 
+const checkboxErrorMessage =
+  'fieldValue is object[] but either "booleanProperty" and/or "displayProperty" have not been set or are not named correctly. Please check these props.';
+
 const initialValues: InitialFormValues = {
   foo: false,
   fooStringArray: ['value1', 'value2'],
@@ -59,8 +62,8 @@ describe('Checkbox', () => {
                 name="fooObjectArray"
                 value={e.name}
                 id={e.name}
-                displayKey="name"
-                booleanKey="enabled"
+                displayProperty="name"
+                booleanProperty="enabled"
               />
             </li>
           ))}
@@ -86,9 +89,7 @@ describe('Checkbox', () => {
           </ul>
         ),
       }),
-    ).toThrowError(
-      'fieldValue is object[] but either "booleanKey" and/or "displayKey" have not been set or are not named correctly. Please check these props.',
-    );
+    ).toThrowError(checkboxErrorMessage);
   });
 
   it('should throw an error if data is object array but identifier props are present but named incorrectly', () => {
@@ -102,17 +103,15 @@ describe('Checkbox', () => {
                   name="fooObjectArray"
                   value={e.name}
                   id={e.name}
-                  displayKey="invalidKeyName"
-                  booleanKey="invalidKeyName"
+                  displayProperty="invalidKeyName"
+                  booleanProperty="invalidKeyName"
                 />
               </li>
             ))}
           </ul>
         ),
       }),
-    ).toThrowError(
-      'fieldValue is object[] but either "booleanKey" and/or "displayKey" have not been set or are not named correctly. Please check these props.',
-    );
+    ).toThrowError(checkboxErrorMessage);
   });
 
   describe('handles changes', () => {

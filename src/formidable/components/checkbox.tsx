@@ -5,9 +5,9 @@ import { FormidableEvent, FieldProps, FormidableValues, AdditionalCheckboxProps 
 
 function Checkbox<T extends FormidableValues, K extends keyof T & string = keyof T & string>({
   name: key,
-  value: displayValue,
-  booleanKey,
-  displayKey,
+  value: displayLabel,
+  booleanProperty,
+  displayProperty,
   ...props
 }: FieldProps<T, K> & AdditionalCheckboxProps): FunctionComponentElement<
   FieldProps<T, K> & AdditionalCheckboxProps
@@ -15,38 +15,47 @@ function Checkbox<T extends FormidableValues, K extends keyof T & string = keyof
   const { value: fieldValue, setField } = useField<T>(key);
 
   const isStringArray = useCallback(
-    (arr: any[]): boolean => arr.every((el) => typeof el === 'string'),
+    (arr: any[]): arr is string[] =>
+      Array.isArray(fieldValue) && arr.every((el) => typeof el === 'string'),
     [],
   );
 
-  const isValidObjectArray = useMemo(
-    () =>
-      !(
-        Array.isArray(fieldValue) &&
-        !isStringArray(fieldValue) &&
-        !(booleanKey && displayKey && fieldValue[0][booleanKey] && fieldValue[0][displayKey])
+  const isObjectArray = useCallback(
+    (arr: any[]): arr is Record<string, unknown>[] =>
+      Array.isArray(fieldValue) && arr.every((el) => typeof el === 'object' && el !== null),
+    [],
+  );
+
+  const isValidObjectArray = useCallback(
+    (arr: any[]): boolean =>
+      !!(
+        isObjectArray(arr) &&
+        booleanProperty &&
+        displayProperty &&
+        arr[0][booleanProperty] &&
+        arr[0][displayProperty]
       ),
     [],
   );
 
-  if (!isValidObjectArray) {
+  if (Array.isArray(fieldValue) && !isStringArray(fieldValue) && !isValidObjectArray(fieldValue)) {
     throw new Error(
-      'fieldValue is object[] but either "booleanKey" and/or "displayKey" have not been set or are not named correctly. Please check these props.',
+      'fieldValue is object[] but either "booleanProperty" and/or "displayProperty" have not been set or are not named correctly. Please check these props.',
     );
   }
 
   const computeNewValue = useCallback((): any | undefined => {
     if (Array.isArray(fieldValue)) {
       if (isStringArray(fieldValue)) {
-        return fieldValue.includes(displayValue)
-          ? fieldValue.filter((el) => el !== displayValue)
-          : [...fieldValue, displayValue];
+        return fieldValue.includes(displayLabel)
+          ? fieldValue.filter((el) => el !== displayLabel)
+          : [...fieldValue, displayLabel];
       }
 
-      if (booleanKey && displayKey) {
+      if (booleanProperty && displayProperty) {
         return fieldValue.map((el) => {
-          if (props.id === el[displayKey]) {
-            return { ...el, [booleanKey]: !el[booleanKey] };
+          if (props.id === el[displayProperty]) {
+            return { ...el, [booleanProperty]: !el[booleanProperty] };
           }
           return el;
         });
@@ -58,7 +67,7 @@ function Checkbox<T extends FormidableValues, K extends keyof T & string = keyof
     }
 
     return undefined;
-  }, [displayValue, fieldValue]);
+  }, [displayLabel, fieldValue]);
 
   const handleCheckboxChange = (): void => {
     setField(key, computeNewValue() as T[keyof T], FormidableEvent.Change);
@@ -67,22 +76,22 @@ function Checkbox<T extends FormidableValues, K extends keyof T & string = keyof
   const isChecked = useMemo((): boolean => {
     if (Array.isArray(fieldValue)) {
       if (isStringArray(fieldValue)) {
-        return fieldValue.includes(displayValue);
+        return fieldValue.includes(displayLabel);
       }
-      if (booleanKey && displayKey) {
-        return fieldValue.find((e) => e[displayKey] === props.id)[booleanKey];
+      if (booleanProperty && displayProperty) {
+        return fieldValue.find((e) => e[displayProperty] === props.id)[booleanProperty];
       }
     }
 
     return !!fieldValue;
-  }, [fieldValue, displayValue]);
+  }, [fieldValue, displayLabel]);
 
   return (
     <input
       /* eslint-disable-next-line react/jsx-props-no-spreading -- otherwise we would need to explicitly list all input props possible */
       {...props}
       name={key}
-      value={displayValue}
+      value={displayLabel}
       onChange={handleCheckboxChange}
       checked={isChecked}
       type="checkbox"

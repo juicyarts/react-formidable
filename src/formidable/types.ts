@@ -153,6 +153,6 @@ export interface SelectProps<T extends FormidableValues>
 }
 
 export interface AdditionalCheckboxProps {
-  booleanKey?: string;
-  displayKey?: string;
+  booleanProperty?: string;
+  displayProperty?: string;
 }
