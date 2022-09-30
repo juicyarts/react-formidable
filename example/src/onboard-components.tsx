@@ -10,6 +10,8 @@ import Formidable, {
   Select,
   AdvancedSelect,
   Checkbox,
+  DateAndTimePicker,
+  Textarea,
 } from '../../src';
 
 type Bar = {
@@ -21,6 +23,8 @@ type Bar = {
   isChecked: boolean;
   roles: string[];
   features: Record<string, string | any>[];
+  startDateTime: string;
+  description: string;
 };
 
 const allCountries = ['Germany', 'France', 'Netherlands'];
@@ -90,6 +94,8 @@ const bar: Bar = {
       enabled: false,
     },
   ],
+  startDateTime: new Date().toISOString(),
+  description: 'ExampleDescription '.repeat(10),
 };
 
 function OnBoardForm(): FunctionComponentElement<unknown> {
@@ -163,7 +169,6 @@ function OnBoardForm(): FunctionComponentElement<unknown> {
                 className="select"
               />
             </div>
-
             <div className="input__group m-y-l">
               <label className="input__label" htmlFor="isChecked">
                 Checkbox: single boolean key
@@ -214,6 +219,22 @@ function OnBoardForm(): FunctionComponentElement<unknown> {
               <pre className="m-top-s">
                 {JSON.stringify(formState?.values.roles, null, 2)}
               </pre>
+            </div>
+            <div className="row flex__ai--flex-end">
+              <DateAndTimePicker<Bar>
+                label="time"
+                id="startDateTime"
+                name="startDateTime"
+                className="input"
+                min={new Date().toISOString()}
+                required
+              />
+            </div>
+            <div className="input__group">
+              <label className="input__label" htmlFor="age">
+                Description
+              </label>
+              <Textarea<Bar> name="description" className="textarea" />
             </div>
           </Form>
         )}

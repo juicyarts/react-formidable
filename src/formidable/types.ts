@@ -5,6 +5,7 @@ import {
   FocusEvent,
   InputHTMLAttributes,
   FormHTMLAttributes,
+  HTMLProps,
 } from 'react';
 import { ObjectSchema, ValidationError } from 'yup';
 
@@ -33,9 +34,15 @@ export type GetFieldInteraction<T> = (key: keyof T) => boolean;
 export type GetFormInteraction = () => boolean;
 export type GetFieldError<T> = (key: keyof T) => ValidationError | undefined;
 export type SetField<T> = (key: keyof T, value: T[keyof T], eventType: FormidableEvent) => void;
-export type HandleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
-export type HandleBlur = (e: FocusEvent<HTMLInputElement | HTMLSelectElement>) => void;
-export type HandleFocus = (e: FocusEvent<HTMLInputElement | HTMLSelectElement>) => void;
+export type HandleChange = (
+  e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
+) => void;
+export type HandleBlur = (
+  e: FocusEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
+) => void;
+export type HandleFocus = (
+  e: FocusEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
+) => void;
 export type HandleSubmit = (e: FormEvent<HTMLFormElement>) => void;
 export type HandleReset = (e: FormEvent<HTMLFormElement>) => void;
 
@@ -155,4 +162,21 @@ export interface SelectProps<T extends FormidableValues>
 export interface AdditionalCheckboxProps {
   booleanProperty?: string;
   displayProperty?: string;
+}
+export interface DateAndTimePickerProps<
+  T extends FormidableValues,
+  K extends keyof T & string = string,
+> extends InputHTMLAttributes<HTMLInputElement> {
+  name: K;
+  label?: string;
+}
+
+export interface PlainFieldProps extends InputHTMLAttributes<HTMLInputElement> {
+  key?: string;
+}
+export interface TextareaProps<
+  T extends FormidableValues,
+  K extends keyof T & string = keyof T & string,
+> extends HTMLProps<HTMLTextAreaElement> {
+  name: K;
 }
