@@ -1,6 +1,6 @@
 {
   "name": "@eppendorf/react-formidable",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "description": "react form library",
   "main": "dist/index.cjs.js",
   "module": "dist/index.js",

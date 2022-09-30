@@ -147,7 +147,6 @@ export interface FeldErrorProps<T> {
 export interface FieldProps<T extends FormidableValues, K extends keyof T & string = string>
   extends InputHTMLAttributes<HTMLInputElement> {
   name: K;
-  subName?: keyof T[K];
 }
 
 export interface FormProps extends FormHTMLAttributes<HTMLFormElement> {
@@ -160,6 +159,10 @@ export interface SelectProps<T extends FormidableValues>
   options: string[];
 }
 
+export interface AdditionalCheckboxProps {
+  booleanProperty?: string;
+  displayProperty?: string;
+}
 export interface DateAndTimePickerProps<
   T extends FormidableValues,
   K extends keyof T & string = string,

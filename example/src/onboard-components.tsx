@@ -9,6 +9,7 @@ import Formidable, {
   FieldError,
   Select,
   AdvancedSelect,
+  Checkbox,
   DateAndTimePicker,
   Textarea,
 } from '../../src';
@@ -19,6 +20,9 @@ type Bar = {
   country: string;
   language: string;
   device: string[];
+  isChecked: boolean;
+  roles: string[];
+  features: Record<string, string | any>[];
   startDateTime: string;
   description: string;
 };
@@ -69,12 +73,27 @@ const allDevices = [
     value: ['Pipette'],
   },
 ];
+
+const availableRoles = ['StandardUser', 'Admin', 'LabManager'];
+
 const bar: Bar = {
   firstName: 'max',
   age: 1,
   country: allCountries[0],
   language: allLanguages[0].value,
   device: ['Pipette'],
+  isChecked: false,
+  roles: ['StandardUser', 'Admin'],
+  features: [
+    {
+      name: 'Feature1',
+      enabled: true,
+    },
+    {
+      name: 'Feature2',
+      enabled: false,
+    },
+  ],
   startDateTime: new Date().toISOString(),
   description: 'ExampleDescription '.repeat(10),
 };
@@ -149,6 +168,57 @@ function OnBoardForm(): FunctionComponentElement<unknown> {
                 options={allDevices}
                 className="select"
               />
+            </div>
+            <div className="input__group m-y-l">
+              <label className="input__label" htmlFor="isChecked">
+                Checkbox: single boolean key
+              </label>
+              <Checkbox<Bar> name="isChecked" className="checkbox" />
+              <pre className="m-top-s">
+                {JSON.stringify(formState?.values.isChecked, null, 2)}
+              </pre>
+            </div>
+            <div className="input__group m-y-l">
+              <label className="input__label" htmlFor="isChecked">
+                Checkboxes: object array
+              </label>
+              <ul>
+                {formState?.values.features.map((e) => (
+                  <li>
+                    <Checkbox<Bar>
+                      name="features"
+                      value={e.name}
+                      id={e.name}
+                      booleanProperty="enabled"
+                      displayProperty="name"
+                    />
+                    <label htmlFor={e.name} className="checkboxLabel">
+                      {e.name}
+                    </label>
+                  </li>
+                ))}
+              </ul>
+              <pre className="m-top-s">
+                {JSON.stringify(formState?.values.features, null, 2)}
+              </pre>
+            </div>
+            <div className="input__group m-y-l">
+              <label className="input__label" htmlFor="isChecked">
+                Checkboxes: string array
+              </label>
+              <ul>
+                {availableRoles.map((e) => (
+                  <li>
+                    <Checkbox<Bar> name="roles" value={e} id={e} />
+                    <label htmlFor={e} className="checkboxLabel">
+                      {e}
+                    </label>
+                  </li>
+                ))}
+              </ul>
+              <pre className="m-top-s">
+                {JSON.stringify(formState?.values.roles, null, 2)}
+              </pre>
             </div>
             <div className="row flex__ai--flex-end">
               <DateAndTimePicker<Bar>
